@@ -1,9 +1,20 @@
+import LetterLine from '../LetterLine';
+
 const AboutContent = (props) => {
+
     return (
-        <>
-            <h1 class="page-name">About Me</h1>
-            <p class="content"> Hi I'm Justin </p>
-        </>
+        <div className="lines">
+            <LetterLine
+                lineText="I'm Justin"
+                letterClass="large-text"
+                wordClass="large-text"
+            />
+            <LetterLine
+                lineText="Data Science"
+                letterClass="normal-text"
+                wordClass="normal-text"
+            />
+        </div> 
     );
 }
 

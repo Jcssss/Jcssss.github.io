@@ -1,23 +1,26 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@100;300;400;700&display=swap');
 
+* {
+    padding: 0px;
+    margin: 0px;
+}
+
 .nav {
-    height: 100%;
-    width: 70px;
+    height: 80px;
+    width: 100%;
     position: fixed;
     top: 0;
     left: 0;
-    background-color: black;
     text-align: center;
-    padding-top: 20px;
+    background-color:black;
 }
 
 .nav-icon {
     color: white;
-    display: inline-block;
     font-size: 30px;
     padding: 15px;
-    height: 30px;
+    height: 25px;
     opacity: 0.5;
 }
 
@@ -30,25 +33,75 @@
     opacity: 1;
 }
 
-.initials {
-    font-family: 'Poppins', sans-serif; 
-    font-weight: bold;
-    margin: 0;
+.nav-buttonContainer {
+    border-radius: 50px;
+    background-color: #112222;
+    margin: 10px;
+    width: 60px;
+    float: right;
+}
+
+.title {
+    float: left;
+    font-size: 50px;
+    color: white;
+    font-family: 'Kanit', sans-serif;
+    font-weight: 600;
+    margin-left: 40px;
 }
 
 .main {
     font-family: 'Kanit', sans-serif;
-    letter-spacing: 3px;
-    margin-left: 70px;
+    padding-left: 20px;
+    margin-top: 80px;
+}
+
+.hoverable-letter {
+    font-size: 100px;
+    font-weight: 600;
+    transition: margin-top 0.1s;
+    float: left;
+    line-height: 0.8em;
+}
+
+.hoverable-letter.normal-text {
+    font-size: 40px;
+}
+
+.hoverable-letter.large-text {
+    font-size: 100px;
+}
+
+.hoverable-letter:hover {
+    margin-top: -10px;
+    color: lightcoral;
+}
+
+.word-container {
+    padding-top: 15px;
+}
+
+.word-container div:hover:nth-child(2n) {color: rgb(73, 188, 226);}
+.word-container div:hover:nth-child(3n) {color: lightsalmon;}
+.word-container div:hover:nth-child(4n) {color: rgb(63, 223, 130);}
+.word-container div:hover:nth-child(5n) {color: rgb(228, 82, 82);}
+
+.word-container.large-text {
+    padding-right: 35px;
+}
+
+.word-container.normal-text {
+    padding-right: 15px;
+}
+
+.lines {
+    display: flex;
+    flex-direction: column;
+    margin-top: 50px;
+    position: absolute;
     padding-left: 20px;
 }
 
-.page-name {
-    margin-bottom: 0px;
-}
-
-.content {
-    margin: 10px;
-    font-weight: 300;
-    font-size: 20px;
+.flex-container {
+    display: flex;
 }

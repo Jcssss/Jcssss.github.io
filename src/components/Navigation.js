@@ -1,20 +1,26 @@
-import { faFolder, faGear, faGraduationCap, faHammer, faCircleUser} from '@fortawesome/free-solid-svg-icons';
+import { faFolder, faGear, faGraduationCap, faHammer, faCircleUser, faHouse} from '@fortawesome/free-solid-svg-icons';
 import NavButton from './NavButton';
 
 const Navigation = ({curPage, onClick}) => {
-    const icons = [faGear, faCircleUser, faGraduationCap, faFolder, faHammer];
-    const pageNames = ['settings', 'about', 'education', 'projects', 'experience'];
+    const pageData = [['Projects', faFolder], ['Experience', faHammer], ['Education', faGraduationCap], ['About', faCircleUser], ['Home', faHouse]];
 
     return (
         <div className='nav'>
-            {icons.map(function (icon, i) {
-                return (<NavButton
-                    key={pageNames[i]} 
-                    icon={icon}
-                    curPage={curPage}
-                    pageName={pageNames[i]}
-                    onClick={onClick}
-                />);
+            <div className="title"> 
+                {curPage}
+            </div>
+            {pageData.map((page) => {
+                return (
+                    <div className='nav-buttonContainer'>
+                        <NavButton
+                            key={page[0]} 
+                            icon={page[1]}
+                            curPage={curPage}
+                            pageName={page[0]}
+                            onClick={onClick}
+                        />
+                    </div>
+                );
             })}
         </div>
     );
