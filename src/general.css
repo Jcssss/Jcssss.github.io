@@ -1,0 +1,23 @@
+* {
+    padding: 0px;
+    margin: 0px;
+}
+
+.flex-container {
+    display: flex;
+}
+
+.right {
+    position: absolute;
+    align-items: right;
+}
+
+.left {
+    position: absolute;
+    align-items: left;
+}
+
+.center {
+    position: absolute;
+    align-items: center;
+}

@@ -3,14 +3,14 @@ import LetterLine from '../LetterLine';
 const AboutContent = (props) => {
 
     return (
-        <div className="lines">
+        <div className="lines center">
             <LetterLine
-                lineText="I'm Justin"
+                lineText="Test Text"
                 letterClass="large-text"
                 wordClass="large-text"
             />
             <LetterLine
-                lineText="Data Science"
+                lineText="Description"
                 letterClass="normal-text"
                 wordClass="normal-text"
             />

@@ -1,11 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@100;300;400;700&display=swap');
 
-* {
-    padding: 0px;
-    margin: 0px;
-}
-
 .nav {
     height: 80px;
     width: 100%;
@@ -52,8 +47,9 @@
 
 .main {
     font-family: 'Kanit', sans-serif;
-    padding-left: 20px;
     margin-top: 80px;
+    padding-right: 100px;
+    padding-left: 20px;
 }
 
 .hoverable-letter {
@@ -64,17 +60,26 @@
     line-height: 0.8em;
 }
 
+.hoverable-letter.small-text {
+    font-size: 22px;
+}
+
+.hoverable-letter:hover {
+    margin-top: -10px;
+    color: lightseagreen;
+}
+
+.hoverable-letter.small-text:hover {
+    margin-top: -5px;
+    color: lightcoral;
+}
+
 .hoverable-letter.normal-text {
     font-size: 40px;
 }
 
 .hoverable-letter.large-text {
     font-size: 100px;
-}
-
-.hoverable-letter:hover {
-    margin-top: -10px;
-    color: lightcoral;
 }
 
 .word-container {
@@ -94,14 +99,28 @@
     padding-right: 15px;
 }
 
+.word-container.small-text {
+    padding-right: 5px;
+}
+
 .lines {
     display: flex;
     flex-direction: column;
+    width: 100%;
     margin-top: 50px;
-    position: absolute;
-    padding-left: 20px;
 }
 
-.flex-container {
-    display: flex;
+.landing-container {
+    height: 100vh;
+    width: 100%;
+    z-index: 10;
+}
+
+.landing-page {
+    position: absolute;
+    top: 20%;
+    font-family: 'Kanit', sans-serif;
+    margin-top: 80px;
+    padding-right: 100px;
+    padding-left: 20px;
 }
