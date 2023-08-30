@@ -5,7 +5,6 @@ const LetterLine = ({lineText, wordClass, letterClass}) => {
         return (
             <>  
                 {text.split("").map((letter, index) => {
-                    console.log(letter)
                     return <div
                         className={"hoverable-letter " + letterClass}
                         key={index}> 
@@ -16,17 +15,25 @@ const LetterLine = ({lineText, wordClass, letterClass}) => {
         )
     };
 
-    return (
-        <FadeIn>
+    const createLine = (text, letterClass, wordClass) => {
+        var words = text.split(" ");
+        return (
             <div className="flex-container">
-                {lineText.split(" ").map((word) => {
+                {words.map((word, i) => {
                     return (
-                        <div className={"word-container " + wordClass}>
+                        <div key={i} 
+                            className={`word-container ${(i + 1 == words.length)? '' : wordClass}`}>
                             {createLetters(word, letterClass)}
                         </div>
                     )
                 })}
             </div>
+        )
+    }
+
+    return (
+        <FadeIn>
+            {createLine(lineText, wordClass, letterClass)}
         </FadeIn>
     );
 }

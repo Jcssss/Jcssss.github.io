@@ -11,6 +11,47 @@
     background-color:black;
 }
 
+.nav-mobile {
+    width: 100%;
+    position: fixed;
+    z-index: 10;
+    top: 0;
+    left: 0;
+    text-align: center;
+    background-color:black;
+    display: flex;
+    flex-direction: column;
+}
+
+.nav-mobile-top {
+    height: 80px;
+}
+
+.nav-mobile-row {
+    height: 40px;
+    display: flex;
+    color: white;
+    font-family: 'Kanit', sans-serif;
+    justify-content: center;
+    align-items: center;
+    border-top: solid 1px;
+    border-color: white;
+    transition: height 0.3s ease;
+}
+
+.nav-mobile-row.hidden {
+    height: 0px;
+}
+
+.nav-mobile-row.hidden :nth-child(n){
+    opacity: 0;
+}
+
+.nav-mobile-row :nth-child(n){
+    opacity: 1;
+    transition: opacity 0.3s ease;
+}
+
 .nav-icon {
     color: white;
     font-size: 30px;
@@ -48,8 +89,6 @@
 .main {
     font-family: 'Kanit', sans-serif;
     margin-top: 80px;
-    padding-right: 100px;
-    padding-left: 20px;
 }
 
 .hoverable-letter {
@@ -121,6 +160,86 @@
     top: 20%;
     font-family: 'Kanit', sans-serif;
     margin-top: 80px;
-    padding-right: 100px;
-    padding-left: 20px;
+}
+
+.menu-icon {
+    color: white;
+    font-size: 70px;
+    padding: 15px;
+    height: 25px;
+    transition: transform 0.2s;
+}
+
+.menu-icon-container {
+    float: right;
+    margin: 13px;
+    height: 100%;
+    background-color: #112222;
+    border-radius: 30px;
+    width: 60px;
+}
+
+.menu-icon.active {
+    transform: rotate(-90deg);
+}
+
+@media screen and (max-width: 550px) {
+    .nav-mobile .nav-mobile-top{
+        height: 65px;
+    }
+
+    .menu-icon {
+        font-size: 16px;
+    }
+    
+    .menu-icon-container {
+        margin: 5px;
+        background-color: black;
+        border-radius: 30px;
+    }
+
+    .title {
+        height: 100%;
+        font-size: 40px;
+        text-align: center;
+    }
+
+    .word-container {
+        padding-top: 10px;
+    }
+
+    .word-container.large-text {
+        padding-right: 22px;
+    }
+    
+    .word-container.normal-text {
+        padding-right: 10px;
+    }
+    
+    .word-container.small-text {
+        padding-right: 4px;
+    }
+
+    .hoverable-letter {
+        font-size: 100px;
+        font-weight: 600;
+        transition: margin-top 0.1s;
+        float: left;
+        line-height: 0.8em;
+    }
+    
+    .hoverable-letter.small-text {
+        font-size: 18px;
+        pointer-events: none;
+    }
+    
+    .hoverable-letter.normal-text {
+        font-size: 30px;
+        pointer-events: none;
+    }
+    
+    .hoverable-letter.large-text {
+        font-size: 70px;
+        pointer-events: none;
+    }
 }
