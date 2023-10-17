@@ -7,7 +7,6 @@
     position: fixed;
     top: 0;
     left: 0;
-    text-align: center;
     background-color:black;
 }
 
@@ -146,7 +145,11 @@
     display: flex;
     flex-direction: column;
     width: 100%;
-    margin-top: 50px;
+}
+
+.line {
+    flex-wrap: wrap;
+    justify-content: center;
 }
 
 .landing-container {
@@ -181,6 +184,11 @@
 
 .menu-icon.active {
     transform: rotate(-90deg);
+}
+
+.about-content-container {
+    display: flex;
+    flex-direction: row;
 }
 
 @media screen and (max-width: 550px) {

@@ -18,7 +18,7 @@ const LetterLine = ({lineText, wordClass, letterClass}) => {
     const createLine = (text, letterClass, wordClass) => {
         var words = text.split(" ");
         return (
-            <div className="flex-container">
+            <div className="flex-container line">
                 {words.map((word, i) => {
                     return (
                         <div key={i} 

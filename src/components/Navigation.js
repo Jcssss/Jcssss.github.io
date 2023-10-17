@@ -13,9 +13,8 @@ const Navigation = ({curPage, navClick, menuClick, menuState, width}) => {
                     <div className="title"> {curPage}</div>
                     {pageData.map((page) => {
                         return (
-                            <div className='nav-buttonContainer'>
+                            <div className='nav-buttonContainer' key={page[0]}>
                                 <NavButton
-                                    key={page[0]} 
                                     icon={page[1]}
                                     curPage={curPage}
                                     pageName={page[0]}
