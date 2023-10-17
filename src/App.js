@@ -34,7 +34,7 @@ const App = () => {
         if (landingState) {
             return (
                 <div 
-                    className="landing-container"
+                    className='landing-container'
                     onClick={() => setLanding(false)} 
                     onKeyDown={() => setLanding(false)}
                 >
@@ -42,7 +42,7 @@ const App = () => {
                 </div>
             );
         } else {
-            return (
+            return (<>
                 <div> 
                     <Navigation 
                         curPage={page} 
@@ -53,6 +53,7 @@ const App = () => {
                     />
                     <Main page={page} />
                 </div>
+            </>
             );
         }
     }
