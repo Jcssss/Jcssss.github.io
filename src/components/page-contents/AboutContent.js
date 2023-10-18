@@ -1,20 +1,13 @@
-import LetterLine from '../LetterLine';
+import FadeIn from "react-fade-in";
 
 const AboutContent = () => {
-
     return (
         <div className='about-content-container'>
-            <div className='lines center'>
-                <LetterLine
-                    lineText="Hi, I'm Justin"
-                    letterClass="large-text"
-                    wordClass="large-text"
-                />
-                <LetterLine
-                    lineText="Description"
-                    letterClass="normal-text"
-                    wordClass="normal-text"
-                />
+            <div className='about-text'>
+                <FadeIn>
+                    <div>Hi I'm Justin</div>
+                    <div>Description</div>
+                </FadeIn>
             </div> 
         </div>
     );

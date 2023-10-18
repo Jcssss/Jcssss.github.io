@@ -8,23 +8,19 @@ const Navigation = ({curPage, navClick, menuClick, menuState, width}) => {
 
     if (width > 600) {
         return (
+            <FadeIn>
             <div className='nav'>
-                <FadeIn>
-                    <div className="title"> {curPage}</div>
-                    {pageData.map((page) => {
-                        return (
-                            <div className='nav-buttonContainer' key={page[0]}>
-                                <NavButton
-                                    icon={page[1]}
-                                    curPage={curPage}
-                                    pageName={page[0]}
-                                    onClick={navClick}
-                                />
-                            </div>
-                        );
-                    })}
-                </FadeIn>
+                {pageData.map((page) => {
+                    return (
+                        <NavButton
+                            curPage={curPage}
+                            pageName={page[0]}
+                            onClick={navClick}
+                        />
+                    );
+                })}
             </div>
+            </FadeIn>
         );
     } else {
         return (
