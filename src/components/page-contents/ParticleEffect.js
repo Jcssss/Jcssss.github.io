@@ -2,9 +2,13 @@ import Particle from './Particle';
 
 var canvas;
 var ctx;
-var mouseX;
-var mouseY;
+var mouseX = 0;
+var mouseY = 0;
 var particles = [];
+var lastX = 0;
+var lastY = 0;
+var dps = 30;
+var counter = 0;
 
 const initParticleEffect = () => {
     canvas = document.getElementById('canvas');
@@ -18,34 +22,44 @@ const initParticleEffect = () => {
 }
 
 function clear () {
-    ctx.fillStyle = "#FFFFFF";
-    ctx.fillRect(0, 0, window.innerWidth, window.innerHeight);
+    ctx.beginPath();
+    ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+    ctx.closePath();
 }
 function draw () {
     clear();
 
-    particles.forEach((particle,i) => {
+    particles.forEach((particle, i) => {
         particle.draw(ctx);
         particle.update();
         if (particle.radius === 0) {
-            particle = particle.slice(0, i).concat(particle.slice(-i));
+            particles = particles.filter((part) => part.exist === true);
         }
     });
 
+    console.log(particles);
     ctx.stroke();
     ctx.fill();
 }
 
 function createParticle() {
-    var par = new Particle(mouseX, mouseY, 6, 'FF0000', 0.00001);
+    var par = new Particle(mouseX, mouseY, 20, 'FF0000', 1);
     particles.push(par);
+}
+
+const getDistance = () => {
+    return Math.sqrt( Math.pow(mouseX - lastX, 2) + Math.pow(mouseY - lastY, 2))
 }
 
 const handleMouseMove = (event) => {
     mouseX = event.pageX;
     mouseY = event.pageY;
 
-    createParticle();
+    if (getDistance() > 20) {
+        lastX = mouseX;
+        lastY = mouseY;
+        createParticle();
+    }
 }
 
 export default initParticleEffect;
