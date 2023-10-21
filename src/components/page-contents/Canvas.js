@@ -11,7 +11,18 @@ const Canvas = () => {
     }
 
     return (
-        <canvas id='canvas'></canvas>
+        <canvas 
+            id='canvas'
+            style={{
+                zIndex: -1,
+                height: '100%',
+                width: '100%',
+                margin: '0px',
+                position: 'fixed',
+                top: '0px',
+                left: '0px'
+            }}
+        ></canvas>
     );
 };
 

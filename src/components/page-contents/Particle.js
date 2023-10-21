@@ -8,10 +8,11 @@ class Particle {
         this.rod = rod;
         this.direction = direction;
         this.speed = speed;
+        this.accel = 0.005;
     }
     
     draw (ctx) {
-        ctx.fillStyle = `#${this.color}`
+        ctx.fillStyle = this.color;
         ctx.beginPath();
         ctx.moveTo(this.x, this.y);
         ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI);
@@ -19,10 +20,16 @@ class Particle {
         ctx.fill();
     }
 
-    update () {
-        this.radius -= 1/this.rod;
-        this.x += this.direction[0] * this.speed;
-        this.y += this.direction[1] * this.speed;
+    update (framesPassed) {
+        this.radius -= 1/this.rod * framesPassed;
+        this.x += this.direction[0] * this.speed * framesPassed;
+        this.y += this.direction[1] * this.speed * framesPassed;
+        
+        this.speed -= this.accel * framesPassed;
+        this.speed = Math.max(0.001, this.speed);
+
+        this.rod -= 0.1 * framesPassed;
+        this.accel += 0.001;
     }
 }
 
