@@ -7,8 +7,7 @@ var mouseY = 0;
 var particles = [];
 var lastX = 0;
 var lastY = 0;
-var dps = 30;
-var counter = 0;
+var frame = 0;
 
 const initParticleEffect = () => {
     canvas = document.getElementById('canvas');
@@ -27,23 +26,26 @@ function clear () {
     ctx.closePath();
 }
 function draw () {
+    frame ++;
     clear();
 
     particles.forEach((particle, i) => {
         particle.draw(ctx);
-        particle.update();
-        if (particle.radius === 0) {
-            particles = particles.filter((part) => part.exist === true);
-        }
+        particle.update(frame);
     });
 
-    console.log(particles);
+    particles = particles.filter((part) => part.radius !== 0);
+
     ctx.stroke();
     ctx.fill();
 }
 
+function getDirection() {
+    return Math.atan((lastY - mouseY)/(lastX - mouseX));
+}
+
 function createParticle() {
-    var par = new Particle(mouseX, mouseY, 20, 'FF0000', 1);
+    var par = new Particle(mouseX, mouseY, 20, 'FF0000', 3, 1, 1);
     particles.push(par);
 }
 
@@ -55,7 +57,7 @@ const handleMouseMove = (event) => {
     mouseX = event.pageX;
     mouseY = event.pageY;
 
-    if (getDistance() > 20) {
+    if (getDistance() > 2) {
         lastX = mouseX;
         lastY = mouseY;
         createParticle();

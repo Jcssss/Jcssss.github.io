@@ -1,12 +1,13 @@
 
 class Particle {
-    constructor (x, y, radius, color, rod) {
+    constructor (x, y, radius, color, rod, direction, speed) {
         this.x = x;
         this.y = y;
         this.radius = radius;
         this.color = color;
         this.rod = rod;
-        this.exist = true;
+        this.direction = direction;
+        this.speed = speed;
     }
     
     draw (ctx) {
@@ -17,10 +18,9 @@ class Particle {
         ctx.closePath();
     }
 
-    update () {
-        this.radius -= this.rod;
-        if (this.radius === 0) {
-            this.exist = false;
+    update (frame) {
+        if (frame % this.rod == 0) {
+            this.radius--;
         }
     }
 }
