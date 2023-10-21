@@ -5,9 +5,8 @@ var ctx;
 var mouseX = 0;
 var mouseY = 0;
 var particles = [];
-var lastX = 0;
-var lastY = 0;
 var frame = 0;
+var ppf = 5;
 
 const initParticleEffect = () => {
     canvas = document.getElementById('canvas');
@@ -17,7 +16,7 @@ const initParticleEffect = () => {
     ctx.canvas.width = window.innerWidth;
 
     document.onmousemove = handleMouseMove;
-    setInterval(draw, 20);
+    setInterval(draw, 10);
 }
 
 function clear () {
@@ -25,39 +24,55 @@ function clear () {
     ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
     ctx.closePath();
 }
+
 function draw () {
     frame ++;
-    clear();
 
-    particles.forEach((particle, i) => {
-        particle.draw(ctx);
+    particles.forEach((particle) => {
+        var x = particle.x - particle.radius - 1;
+        var y = particle.y - particle.radius - 1;
+        ctx.clearRect( x, y, 2 * particle.radius + 2, 2 * particle.radius + 2);
         particle.update(frame);
     });
 
-    particles = particles.filter((part) => part.radius !== 0);
+    particles = particles.filter((part) => part.radius > 0);
+
+    particles.forEach((particle) => {
+        particle.draw(ctx);
+    });
 }
 
-function getDirection() {
-    return Math.atan((lastY - mouseY)/(lastX - mouseX));
+function getDirections() {
+    var directions = [];
+    var angle = Math.random() * 2 * Math.PI / ppf;
+
+    for (var i = 0 ; i < ppf ; i++) {
+        directions.push([Math.cos(angle), Math.sin(angle)]);
+        angle += 2 * Math.PI / ppf;
+    }
+
+    return directions;
 }
 
-function createParticle() {
-    particles.push(new Particle(mouseX, mouseY, 20, 'FF0000', 3, 1, 1));
-}
+function createParticles() {
+    var directions = getDirections();
+    var speed, size = [0, 0];
 
-const getDistance = () => {
-    return Math.sqrt( Math.pow(mouseX - lastX, 2) + Math.pow(mouseY - lastY, 2))
+    for (var i = 0 ; i < directions.length ; i++) {
+        speed = 0.1 + Math.random() * 0.2;
+        size = 5 + Math.random() * 10;
+
+        particles.push(
+            new Particle(mouseX, mouseY, size, 'FF0000', 20, directions[i], speed)
+        );
+    }
 }
 
 const handleMouseMove = (event) => {
     mouseX = event.pageX;
     mouseY = event.pageY;
 
-    if (getDistance() > 2) {
-        lastX = mouseX;
-        lastY = mouseY;
-        createParticle();
-    }
+    createParticles();
 }
 
 export default initParticleEffect;
