@@ -35,9 +35,6 @@ function draw () {
     });
 
     particles = particles.filter((part) => part.radius !== 0);
-
-    ctx.stroke();
-    ctx.fill();
 }
 
 function getDirection() {
@@ -45,8 +42,7 @@ function getDirection() {
 }
 
 function createParticle() {
-    var par = new Particle(mouseX, mouseY, 20, 'FF0000', 3, 1, 1);
-    particles.push(par);
+    particles.push(new Particle(mouseX, mouseY, 20, 'FF0000', 3, 1, 1));
 }
 
 const getDistance = () => {
