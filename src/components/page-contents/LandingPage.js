@@ -1,31 +1,16 @@
-import LetterLine from '../LetterLine';
+import FadeIn from "react-fade-in";
 
 const LandingPage = (props) => {
 
-    return (
+    return ( 
         <div className="landing-page lines center">
-            <LetterLine
-                lineText="Justin Siu"
-                letterClass="large-text"
-                wordClass="large-text"
-            />
-            <LetterLine
-                lineText="Data Analysis | Software Development"
-                letterClass="small-text"
-                wordClass="small-text"
-            />
-            <LetterLine
-                lineText="Java | Python | Javascript"
-                letterClass="small-text"
-                wordClass="small-text"
-            />
-            <div style={{height: 50}}></div>
-            <LetterLine
-                lineText="(Click to Continue)"
-                letterClass="small-text"
-                wordClass="small-text"
-            />
-        </div> 
+            <FadeIn>
+                <div>Justin Siu</div>
+                <div>Data Analysis | Software Development</div>
+                <div>Java | Python | Javascript</div>
+                <div>(Click to Continue)</div>
+            </FadeIn>
+        </div>
     );
 }
 

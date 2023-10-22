@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Navigation from './components/Navigation';
 import Main from './components/Main';
 import LandingPage from './components/page-contents/LandingPage';
+import Canvas from './components/page-contents/Canvas';
 
 const App = () => {
     const [page, setPage] = useState('About');
@@ -34,16 +35,18 @@ const App = () => {
         if (landingState) {
             return (
                 <div 
-                    className="landing-container"
+                    className='landing-container'
                     onClick={() => setLanding(false)} 
                     onKeyDown={() => setLanding(false)}
                 >
+                    <Canvas/>
                     <LandingPage />
                 </div>
             );
         } else {
-            return (
+            return (<>
                 <div> 
+                    <Canvas/>
                     <Navigation 
                         curPage={page} 
                         navClick={changePage} 
@@ -53,6 +56,7 @@ const App = () => {
                     />
                     <Main page={page} />
                 </div>
+            </>
             );
         }
     }
