@@ -10,7 +10,19 @@ const Canvas = () => {
         initParticleEffect();
     }
 
-    return (
+    return (<>
+        <div 
+            style = {{
+                zIndex: -2,
+                height: '100%',
+                width: '100%',
+                margin: '0px',
+                position: 'fixed',
+                top: '0px',
+                left: '0px',
+                backgroundColor: '#2f3136'
+            }}
+        ></div>
         <canvas 
             id='canvas'
             style={{
@@ -23,6 +35,7 @@ const Canvas = () => {
                 left: '0px'
             }}
         ></canvas>
+    </>
     );
 };
 

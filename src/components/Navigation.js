@@ -4,7 +4,7 @@ import FadeIn from "react-fade-in";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const Navigation = ({curPage, navClick, menuClick, menuState, width}) => {
-    const pageData = [['Projects', faFolder], ['Experience', faHammer], ['Education', faGraduationCap], ['About', faCircleUser]];
+    const pageData = [['About', faCircleUser], ['Education', faGraduationCap], ['Experience', faHammer], ['Projects', faFolder]];
 
     if (width > 600) {
         return (

@@ -14,9 +14,9 @@ class Particle {
     draw (ctx) {
         ctx.fillStyle = this.color;
         ctx.beginPath();
-        ctx.moveTo(this.x, this.y);
         ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI);
-        ctx.closePath();
+        //ctx.strokeStyle = 'white';
+        //ctx.stroke();
         ctx.fill();
     }
 
@@ -26,10 +26,10 @@ class Particle {
         this.y += this.direction[1] * this.speed * framesPassed;
         
         this.speed -= this.accel * framesPassed;
-        this.speed = Math.max(0.001, this.speed);
+        this.speed = Math.max(0.05, this.speed);
 
         this.rod -= 0.1 * framesPassed;
-        this.accel += 0.001;
+        this.accel += 0.0005;
     }
 }
 

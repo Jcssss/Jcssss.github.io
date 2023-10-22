@@ -5,7 +5,7 @@ const AboutContent = () => {
         <div className='about-content-container'>
             <div className='about-text'>
                 <FadeIn>
-                    <div>Hi I'm Justin</div>
+                    <h1>Hi, I'm Justin</h1>
                     <div>Description</div>
                 </FadeIn>
             </div> 

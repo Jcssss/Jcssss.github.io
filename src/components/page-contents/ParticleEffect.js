@@ -15,26 +15,41 @@ var mouseX = 0;
 var mouseY = 0;
 var particles = [];
 var startTime = 0;
+var colorCounter = 0;
+var onCanvas = true;
 
-const ppf = 3; // particles per frame
+const ppf = 1; // particles per frame
 const fps = 60; // frame per second
 const distForMaxModifier = 100; // 
 const framesPerRadialDecrease = 10;
-const distToFill = 10;
+const distToFill = 5;
 
 const hslLightness = '60%';
 const hslSaturation = '90%';
+
+var timeStart;
+
+function resetCanvasDimensions () {
+    ctx.canvas.height = window.innerHeight;
+    ctx.canvas.width = window.innerWidth;
+}
 
 // initializes the system
 const initParticleEffect = () => {
     canvas = document.getElementById('canvas');
     ctx = canvas.getContext('2d');
 
-    ctx.canvas.height = window.innerHeight;
-    ctx.canvas.width = window.innerWidth;
+    resetCanvasDimensions();
 
     // initializes particle creation
     document.onmousemove = handleMouseMove;
+    window.addEventListener("resize", resetCanvasDimensions)
+    document.addEventListener("mouseleave", () => {onCanvas = false});
+    document.addEventListener("mouseenter", (event) => {
+        onCanvas = true
+        mouseX = event.x
+        mouseY = event.y
+    });
 
     // starts animating existing particles
     startTime = document.timeline.currentTime;
@@ -62,10 +77,12 @@ function draw (curTime) {
     // removes all particles that have faded completely
     particles = particles.filter((part) => part.radius > 0);
 
+    timeStart = Date.now();
     // for each particle, draws the particle
     particles.forEach((particle) => {
         particle.draw(ctx);
     });
+    console.log(Date.now() - timeStart);
 
     // begins next frame
     window.requestAnimationFrame((t) => draw(t));
@@ -81,7 +98,7 @@ function getDirections(dirBias, travelDistance) {
 
     var modifier = Math.min(travelDistance / distForMaxModifier, 1);
 
-    var angleOptionOffset = Math.PI * Math.max(1 - modifier, 0.2);
+    var angleOptionOffset = Math.PI * Math.max(1 - modifier, 0.1);
 
     // offests the angles by a certain amount
     var angle = startAngle - angleOptionOffset;
@@ -102,7 +119,6 @@ function getDirections(dirBias, travelDistance) {
     return directions;
 }
 
-
 function createParticles(dirBias, travelDistance, x, y) {
     var directions = getDirections(dirBias, travelDistance);
     var speed, size = [0, 0];
@@ -112,7 +128,12 @@ function createParticles(dirBias, travelDistance, x, y) {
         speed = 1 + Math.random() * 0.4;
         size = 3 + Math.random() * 8;
 
-        color = (Math.random() * 360).toString();
+        // gradient color scheme
+        colorCounter = (colorCounter === 359)? 0 : colorCounter + 1;
+        color = colorCounter.toString();
+
+        // random color scheme
+        //color = (Math.random() * 360).toString();
         color = `hsl(${color}, ${hslSaturation}, ${hslLightness})`;
 
         particles.push(
@@ -143,7 +164,8 @@ const handleMouseMove = (event) => {
     var lastX = mouseX;
     var lastY = mouseY;
     var temp = travelDistance;
-    while (temp > distToFill) {
+
+    while (onCanvas && temp > distToFill) {
         lastX += mainDirection[0] * distToFill;
         lastY += mainDirection[1] * distToFill;
 
