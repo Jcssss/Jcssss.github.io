@@ -1,15 +1,11 @@
-import React from 'react';
-import EducationContent from './page-contents/EducationContent';
 import AboutContent from './page-contents/AboutContent';
 import ProjectsContent from './page-contents/ProjectsContent';
 import ExperienceContent from './page-contents/ExperienceContent';
 
-const Main = ({page}) => {
+const Main = ({page, width}) => {
 
     const displayContent = (page) => {
-        if (page === 'Education') {
-            return <EducationContent />;
-        } else if (page === 'Projects') {
+        if (page === 'Projects') {
             return <ProjectsContent />;
         } else if (page === 'Experience') {
             return <ExperienceContent />;
@@ -18,11 +14,25 @@ const Main = ({page}) => {
         }
     }
 
-    return (
-        <div className='main'>
-            {displayContent(page)}
-        </div>
-    );
+    if (width > 700) {
+        return (
+            <div className='content-container'>
+                {displayContent(page)}
+            </div>
+        );
+    } else {
+        return (<>
+            <div className='content-container'>
+                {displayContent('About')}
+            </div>
+            <div className='content-container'>
+                {displayContent('Experience')}
+            </div>
+            <div className='content-container'>
+                {displayContent('Projects')}
+            </div>
+        </>);
+    }
 };
 
 export default Main;

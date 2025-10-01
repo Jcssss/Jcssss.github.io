@@ -1,12 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import Navigation from './components/Navigation';
 import Main from './components/Main';
-import LandingPage from './components/page-contents/LandingPage';
-import Canvas from './components/page-contents/Canvas';
 
 const App = () => {
     const [page, setPage] = useState('About');
-    const [onLanding, setLanding] = useState(true);
     const [menu, setMenu] = useState(false);
     const [width, setWidth] = useState(0);
 
@@ -31,38 +28,27 @@ const App = () => {
         setMenu(!menu);
     }
 
-    const displayContent = (landingState) => {
-        if (landingState) {
-            return (
-                <div 
-                    className='landing-container'
-                    onClick={() => setLanding(false)} 
-                    onKeyDown={() => setLanding(false)}
-                >
-                    <Canvas/>
-                    <LandingPage />
-                </div>
-            );
-        } else {
-            return (<>
-                <div> 
-                    <Canvas/>
-                    <Navigation 
-                        curPage={page} 
-                        navClick={changePage} 
-                        menuClick={toggleMenu}
-                        menuState={menu}
-                        width={width}
-                    />
-                    <Main page={page} />
-                </div>
-            </>
-            );
-        }
+    const displayContent = () => {
+        return (<>
+            <div class="page">
+                <Navigation 
+                    curPage={page} 
+                    navClick={changePage} 
+                    menuClick={toggleMenu}
+                    menuState={menu}
+                    width={width}
+                />
+                <Main 
+                    width={width}
+                    page={page} 
+                />
+            </div>
+        </>
+        );
     }
 
     return (
-        <>{displayContent(onLanding)}</>
+        <>{displayContent()}</>
     );
 }
 
