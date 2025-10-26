@@ -40,7 +40,7 @@ const App = () => {
                 />
                 <Main 
                     width={width}
-                    page={page} 
+                    page={page}
                 />
             </div>
         </>

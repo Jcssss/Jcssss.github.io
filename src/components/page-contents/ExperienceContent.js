@@ -1,34 +1,56 @@
 import FadeIn from "react-fade-in";
+import Widget from "./Widget.js";
+import { useEffect, useMemo } from "react";
 
-const ExperienceContent = (props) => {
+const ExperienceContent = ({badgeColours, setBadgeNames}) => {
+    const widgetData = useMemo(() => ({
+        "SAP": {
+            description: "Software Developer, Jan 2025 - Dec 2025",
+            summary: "Maintained the testing infrastructure for SAP Business Data Cloud and automated test feedback services.",
+            badges: ["JavaScript", "Groovy", "Python", "Java", "SQL", "Docker", "Kubernetes"],
+        },
+        "ACD Systems": {
+            description: "Software Developer, Jan 2025 - Dec 2025",
+            summary: "Maintained the testing infrastructure for SAP Business Data Cloud and automated test feedback services.",
+            badges: ["Python", "CSS", "JavaScript", "Machine Learning"]
+        },
+        "Big Think Technologies Inc": {
+            description: "QA Analyst, May 2022 - Aug 2022",
+            summary: "Manual testing and automated data analysis of the crypto-currency based game Space Tokens.",
+            badges: ["Python", "Cardano", "Block-chain", "Unity", "C#"]
+        }
+    }), [])
+
+    useEffect(() => {
+        setBadgeNames((curr) => {
+            const newBadges = Object.keys(widgetData).map((key) => widgetData[key]["badges"])
+            let updatedBadges = [...curr]
+            for (let badgeSet of newBadges) {
+                for (let badgeName of badgeSet) {
+                    if (!updatedBadges.includes(badgeName)) {
+                        updatedBadges.push(badgeName)
+                    }
+                }
+            }
+            return [...updatedBadges]
+        })
+    }, [widgetData, setBadgeNames])
+
     return (
         <>
             <FadeIn>
                 <h2 class="title">Work Experience:</h2>
                 <div className='experience content'>
-                    <p class="main-content">
-                        <h4>SAP</h4>
-                        <i>Software Developer, Jan 2025 - Dec 2025</i>
-                    </p>
-                    <ul class="main-content">
-                        <li>Maintained the testing infrastructure for SAP Business Data Cloud and automated test feedback services.</li>
-                    </ul>
-                    <div></div>
-                    <p class="main-content">
-                        <h4>ACD Systems</h4>
-                        <i>QA Analyst, May 2023 - Dec 2023</i>
-                    </p>
-                    <ul class="main-content">
-                        <li>Automated testing of the graphic design software ACDSee.</li>
-                    </ul>
-                    <div></div>
-                    <p class="main-content">
-                        <h4>Big Think Technologies Inc</h4>
-                        <i>QA Analyst, May 2022 - Aug 2022</i>
-                    </p>
-                    <ul class="main-content">
-                        <li>Manual testing and automated data analysis of the crypto-currency based game Space Tokens.</li>
-                    </ul>
+                    {Object.keys(widgetData).map((key) => {
+                        const data = widgetData[key]
+                        return <Widget 
+                            title={key}
+                            description={data["description"]}
+                            summary={data["summary"]}
+                            badges={data["badges"]}
+                            badgeColours={badgeColours}
+                        />
+                    })}
                 </div>
             </FadeIn>
         </>
