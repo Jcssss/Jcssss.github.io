@@ -7,12 +7,20 @@ const Main = ({page, width}) => {
     const [badgeNames, setBadgeNames] = useState([])
     const [badgeColours, setBadgeColours] = useState({})
     const displayContent = (page) => {
-        if (page === 'Projects') {
-            return <ProjectsContent badgeColours={badgeColours} setBadgeNames={setBadgeNames}/>;
-        } else if (page === 'Experience') {
-            return <ExperienceContent badgeColours={badgeColours} setBadgeNames={setBadgeNames}/>;
+        if (width > 900) {
+            if (page === 'Projects') {
+                return <ProjectsContent badgeColours={badgeColours} setBadgeNames={setBadgeNames}/>;
+            } else if (page === 'Experience') {
+                return <ExperienceContent badgeColours={badgeColours} setBadgeNames={setBadgeNames}/>;
+            } else {
+                return <AboutContent />;
+            }
         } else {
-            return <AboutContent />;
+            return <>
+                <AboutContent />
+                <ExperienceContent badgeColours={badgeColours} setBadgeNames={setBadgeNames}/>
+                <ProjectsContent badgeColours={badgeColours} setBadgeNames={setBadgeNames}/>
+            </>
         }
     }
 

@@ -13,6 +13,9 @@ const App = () => {
     });
 
     const detectWidth = () => {
+        if (width > 900 && window.innerWidth <= 900) {
+            setPage('About')
+        }
         setWidth(window.innerWidth);
     }
 
