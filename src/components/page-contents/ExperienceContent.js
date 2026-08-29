@@ -4,6 +4,11 @@ import { useEffect, useMemo } from "react";
 
 const ExperienceContent = ({badgeColours, setBadgeNames}) => {
     const widgetData = useMemo(() => ({
+        "A Thinking Ape": {
+            description: "Software Developer, May 2026 - Aug 2026",
+            summary: "Built internal tooling to assist in designer authoring workflows for a variety of mobile games.",
+            badges: ["Django", "React", "Python", "JavaScript", "Docker"],
+        },
         "SAP": {
             description: "Software Developer, Jan 2025 - Dec 2025",
             summary: "Maintained the testing infrastructure for SAP Business Data Cloud and automated test feedback services.",

@@ -16,7 +16,7 @@ const App = () => {
         if (width > 900 && window.innerWidth <= 900) {
             setPage('About')
         }
-        setWidth(window.innerWidth);
+        setWidth(document.documentElement.clientWidth);
     }
 
     const changePage = (pageName) => {
