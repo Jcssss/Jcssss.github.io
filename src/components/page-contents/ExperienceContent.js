@@ -16,7 +16,7 @@ const ExperienceContent = ({badgeColours, setBadgeNames}) => {
         },
         "ACD Systems": {
             description: "Software Developer, Jan 2025 - Dec 2025",
-            summary: "Maintained the testing infrastructure for SAP Business Data Cloud and automated test feedback services.",
+            summary: "Tested and analyzed data on AI recognition software for image post-processing software.",
             badges: ["Python", "CSS", "JavaScript", "Machine Learning"]
         },
         "Big Think Technologies Inc": {
