@@ -1,0 +1,243 @@
+:root {
+    --font-heading: 'Plus Jakarta Sans', sans-serif;
+    --font-body: 'Inter', sans-serif;
+
+    /* Dark Theme Defaults */
+    --bg-color: #080c14;
+    --text-main: #f8fafc;
+    --text-muted: #cbd5e1;
+    --header-bg: rgba(8, 12, 20, 0.95);
+    --header-border: rgba(59, 130, 246, 0.3);
+    --card-container-bg: rgba(15, 23, 42, 0.95);
+    --card-container-border: rgba(59, 130, 246, 0.35);
+    --modal-bg: #0f172a;
+    --dock-bg: linear-gradient(to top, rgba(3, 7, 18, 0.98), rgba(3, 7, 18, 0.8), transparent);
+    --tooltip-bg: rgba(15, 23, 42, 0.95);
+    --tooltip-border: rgba(59, 130, 246, 0.6);
+    --tooltip-text: #60a5fa;
+    --content-box-bg: rgba(15, 23, 42, 0.7);
+    --content-box-border: #1e293b;
+}
+
+body.light-mode {
+    --bg-color: #f8fafc;
+    --text-main: #0f172a;
+    --text-muted: #475569;
+    --header-bg: rgba(255, 255, 255, 0.95);
+    --header-border: rgba(203, 213, 225, 0.85);
+    --card-container-bg: rgba(255, 255, 255, 0.97);
+    --card-container-border: rgba(226, 232, 240, 0.95);
+    --modal-bg: #ffffff;
+    --dock-bg: linear-gradient(to top, rgba(248, 250, 252, 0.98), rgba(248, 250, 252, 0.85), transparent);
+    --tooltip-bg: rgba(255, 255, 255, 0.95);
+    --tooltip-border: rgba(59, 130, 246, 0.5);
+    --tooltip-text: #1d4ed8;
+    --content-box-bg: #f1f5f9;
+    --content-box-border: #cbd5e1;
+}
+
+body {
+    font-family: var(--font-body);
+    overflow-x: hidden;
+    background-color: var(--bg-color);
+    color: var(--text-main);
+    user-select: none;
+    transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+h1, h2, h3, h4, .font-heading {
+    font-family: var(--font-heading);
+    letter-spacing: -0.025em;
+}
+
+/* TCG Card Base Styling */
+.tcg-card {
+    transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s ease, z-index 0.1s ease, filter 0.3s ease, opacity 0.3s ease;
+    transform-style: preserve-3d;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 0 15px rgba(255, 255, 255, 0.05);
+}
+
+body.light-mode .tcg-card {
+    box-shadow: 0 12px 28px -5px rgba(15, 23, 42, 0.12), 0 2px 10px rgba(0, 0, 0, 0.04);
+}
+
+/* Disabled Card (Insufficient Mana or Active) */
+.tcg-card.card-disabled {
+    opacity: 0.45 !important;
+    filter: grayscale(0.55) brightness(0.75) !important;
+    cursor: not-allowed !important;
+    pointer-events: none !important;
+}
+
+/* Active Page Card Styling */
+.tcg-card.active-card {
+    cursor: default !important;
+    opacity: 0.55 !important;
+    filter: grayscale(0.4) !important;
+}
+
+/* Mobile Cards Layout (Inside Drawer) */
+.mobile-card {
+    transform: none !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Hand Dock & Expansion for Desktop */
+#hand-dock {
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    transform: translateY(60%);
+}
+
+#hand-dock:hover {
+    transform: translateY(0%);
+}
+
+/* Dock Tooltip Hover Fade Out */
+#dock-tooltip {
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    pointer-events: none;
+    background-color: var(--tooltip-bg);
+    border-color: var(--tooltip-border);
+    color: var(--tooltip-text);
+}
+
+#hand-dock:hover #dock-tooltip {
+    opacity: 0 !important;
+    transform: translateX(-50%) translateY(8px) scale(0.9) !important;
+}
+
+/* Fanned Hand Mechanics */
+.hand-card {
+    transform-origin: bottom center;
+    will-change: transform, z-index;
+}
+
+@media (min-width: 768px) {
+    .hand-card:nth-child(1) { transform: rotate(-10deg) translateY(10px); z-index: 10; }
+    .hand-card:nth-child(2) { transform: rotate(-3deg) translateY(0px); z-index: 20; }
+    .hand-card:nth-child(3) { transform: rotate(3deg) translateY(0px); z-index: 30; }
+    .hand-card:nth-child(4) { transform: rotate(10deg) translateY(10px); z-index: 40; }
+
+    .hand-card:hover:not(.active-card):not(.card-disabled) {
+        transform: rotate(0deg) translateY(-65px) scale(1.18) !important;
+        z-index: 100 !important;
+        box-shadow: 0 20px 35px -5px rgba(0, 0, 0, 0.6), 0 0 25px rgba(59, 130, 246, 0.5);
+    }
+}
+
+/* Play Spell Animation */
+@keyframes playCardAnim {
+    0% { transform: scale(1) translateY(0); opacity: 1; }
+    50% { transform: scale(1.35) translateY(-260px) rotate(0deg); opacity: 0.9; filter: brightness(1.5) drop-shadow(0 0 35px rgba(59, 130, 246, 0.9)); }
+    100% { transform: scale(0.1) translateY(-600px); opacity: 0; }
+}
+
+.animate-play {
+    animation: playCardAnim 0.65s ease-in forwards !important;
+    pointer-events: none;
+}
+
+/* Floating Mana Loss Popup */
+@keyframes floatManaLoss {
+    0% { opacity: 1; transform: translateY(0) scale(1); }
+    50% { opacity: 1; transform: translateY(-20px) scale(1.2); }
+    100% { opacity: 0; transform: translateY(-40px) scale(0.9); }
+}
+
+.animate-mana-loss {
+    animation: floatManaLoss 1s ease-out forwards;
+}
+
+/* Background Canvas */
+#bg-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1;
+    pointer-events: none;
+}
+
+.stage-container {
+    background-color: var(--card-container-bg);
+    border-color: var(--card-container-border);
+    color: var(--text-main);
+    transition: background-color 0.4s ease, border-color 0.4s ease, color 0.4s ease;
+}
+
+.content-box-bg {
+    background-color: var(--content-box-bg) !important;
+    border-color: var(--content-box-border) !important;
+    color: var(--text-main) !important;
+}
+
+.modal-box-bg {
+    background-color: var(--modal-bg) !important;
+    border-color: var(--content-box-border) !important;
+    color: var(--text-main) !important;
+}
+
+.input-box-bg {
+    background-color: var(--content-box-bg) !important;
+    border-color: var(--content-box-border) !important;
+    color: var(--text-main) !important;
+}
+
+body.light-mode .input-box-bg::placeholder {
+    color: #94a3b8 !important;
+}
+
+body.light-mode .header-mana-badge {
+    background-color: #eff6ff !important;
+    border-color: #93c5fd !important;
+}
+
+/* TCG Hand Card Specific Dark Mode Text Fixes */
+body:not(.light-mode) .hand-card h3 {
+    color: #f8fafc !important;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+}
+
+body:not(.light-mode) .hand-card p {
+    color: #cbd5e1 !important;
+}
+
+body.light-mode .hand-card h3 {
+    color: #0f172a !important;
+}
+
+body.light-mode .hand-card p {
+    color: #334155 !important;
+}
+
+body.light-mode .hand-card .card-icon,
+body.light-mode .mobile-card .card-icon {
+    color: #0284c7 !important;
+}
+
+body:not(.light-mode) .hand-card .card-icon,
+body:not(.light-mode) .mobile-card .card-icon {
+    color: #38bdf8 !important;
+}
+
+/* Toggle Buttons Theme Styles */
+body:not(.light-mode) .header-toggle-btn {
+    background-color: rgba(15, 23, 42, 0.9) !important;
+    border-color: #1e293b !important;
+    color: #f8fafc !important;
+}
+
+body:not(.light-mode) .header-toggle-btn:hover {
+    background-color: #1e293b !important;
+}
+
+body.light-mode .header-toggle-btn {
+    background-color: #e2e8f0 !important;
+    border-color: #cbd5e1 !important;
+    color: #0f172a !important;
+}
+
+body.light-mode .header-toggle-btn:hover {
+    background-color: #cbd5e1 !important;
+}

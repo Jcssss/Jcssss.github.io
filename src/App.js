@@ -1,533 +1,807 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import AboutContent from './components/page-contents/AboutContent';
+import ExperienceContent from './components/page-contents/ExperienceContent';
 
 // ==========================================
-// 1. NAVBAR COMPONENT
+// 1. WEB AUDIO SYNTHESIZER
 // ==========================================
-const Navbar = ({ theme, toggleTheme }) => {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+class SoundEngine {
+    constructor() {
+        this.ctx = null;
+        this.enabled = true;
+    }
 
-  const navLinks = [
-    { name: 'About', href: '#about' },
-    { name: 'Experience', href: '#experience' },
-    { name: 'Projects', href: '#projects' },
-    { name: 'Contact', href: '#contact' },
-  ];
+    init() {
+        if (!this.ctx) {
+            const AudioContext = window.AudioContext || window.webkitAudioContext;
+            this.ctx = new AudioContext();
+        }
+        if (this.ctx.state === 'suspended') {
+            this.ctx.resume();
+        }
+    }
 
-  return (
-    <header className="sticky top-0 z-50 backdrop-blur-md bg-white/80 dark:bg-slate-950/80 border-b border-slate-200 dark:border-slate-800/80 transition-colors duration-300">
-      <div className="max-w-5xl mx-auto px-8 md:px-16 lg:px-24 h-20 flex items-center justify-between">
-        {/* Brand Logo */}
-        <a href="#about" className="text-xl font-bold tracking-tight text-slate-900 dark:text-white hover:text-sky-600 dark:hover:text-sky-400 transition-colors">
-          Justin Siu
-        </a>
+    playHover() {
+        if (!this.enabled) return;
+        this.init();
+        const now = this.ctx.currentTime;
+        
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(110, now);
+        osc.frequency.exponentialRampToValueAtTime(140, now + 0.06);
 
-        {/* Desktop Links */}
-        <nav className="hidden md:flex items-center space-x-10 text-sm font-medium">
-          {navLinks.map((link) => (
-            <a
-              key={link.name}
-              href={link.href}
-              className="text-slate-600 dark:text-slate-300 hover:text-sky-600 dark:hover:text-sky-400 transition-colors"
-            >
-              {link.name}
-            </a>
-          ))}
-        </nav>
+        gain.gain.setValueAtTime(0.03, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.06);
 
-        <div className="flex items-center space-x-3">
-          {/* Theme Toggle Button */}
-          <button
-            onClick={toggleTheme}
-            type="button"
-            aria-label="Toggle Dark and Light Mode"
-            className="p-2.5 rounded-full text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all cursor-pointer"
-          >
-            {theme === 'dark' ? (
-              <i className="fa-solid fa-sun text-amber-400 text-lg"></i>
-            ) : (
-              <i className="fa-solid fa-moon text-slate-700 text-lg"></i>
-            )}
-          </button>
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start();
+        osc.stop(now + 0.06);
+    }
 
-          {/* Mobile Menu Button */}
-          <button
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            aria-label="Toggle Mobile Navigation Menu"
-            className="md:hidden p-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800 focus:outline-none"
-          >
-            {mobileMenuOpen ? (
-              <i className="fa-solid fa-xmark text-xl"></i>
-            ) : (
-              <i className="fa-solid fa-bars text-xl"></i>
-            )}
-          </button>
-        </div>
-      </div>
+    playCardPlay() {
+        if (!this.enabled) return;
+        this.init();
+        const now = this.ctx.currentTime;
+        
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(523.25, now);
+        osc.frequency.exponentialRampToValueAtTime(1046.50, now + 0.25);
 
-      {/* Mobile Menu */}
-      {mobileMenuOpen && (
-        <div className="md:hidden border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 px-8 py-6 space-y-4">
-          {navLinks.map((link) => (
-            <a
-              key={link.name}
-              href={link.href}
-              onClick={() => setMobileMenuOpen(false)}
-              className="block text-base font-medium text-slate-700 dark:text-slate-300 hover:text-sky-600 dark:hover:text-sky-400"
-            >
-              {link.name}
-            </a>
-          ))}
-        </div>
-      )}
-    </header>
-  );
-};
+        gain.gain.setValueAtTime(0.2, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
 
-// ==========================================
-// 2. ABOUT COMPONENT
-// ==========================================
-const About = () => {
-  const coreSkills = [
-    'React',
-    'Node.js',
-    'TypeScript',
-    'Docker',
-    'SQL',
-    'JavaScript',
-    'Python',
-    'R',
-  ];
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start();
+        osc.stop(now + 0.3);
 
-  return (
-    <section id="about" className="pt-2 scroll-mt-24 space-y-8">
+        const sub = this.ctx.createOscillator();
+        const subGain = this.ctx.createGain();
+        sub.type = 'sine';
+        sub.frequency.setValueAtTime(160, now);
+        sub.frequency.exponentialRampToValueAtTime(30, now + 0.35);
 
-      <div className="flex flex-col-reverse md:flex-row md:items-start justify-between gap-12 lg:gap-16">
-        <div className="space-y-6 max-w-xl">
+        subGain.gain.setValueAtTime(0.25, now);
+        subGain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
 
-          {/* Intro Heading & Summary */}
-          <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-tight">
-            Hi, I'm Justin! <br />
-          </h1>
+        sub.connect(subGain);
+        subGain.connect(this.ctx.destination);
+        sub.start();
+        sub.stop(now + 0.35);
+    }
 
-          <p className="text-base sm:text-lg text-slate-600 dark:text-slate-300 leading-relaxed">
-            I'm a 5th year Data Science student in my last semester of study at the University of Victoria. Whether it's a class, hackathon, or personal project I'm always looking for the next opportunity to hone my skills alongside other like-minded individuals.
-            <br/><br/>
-            In my free time I love to play badminton, play Pokemon, and crochet!
-            <br/><br/>
-            Thanks for stopping by!
-          </p>
+    playPotion() {
+        if (!this.enabled) return;
+        this.init();
+        const now = this.ctx.currentTime;
 
-          {/* Core Tech Stack Badges */}
-          <div className="space-y-3 pt-2">
-            <span className="text-xs font-semibold tracking-wider uppercase text-slate-500 dark:text-slate-400">
-              Tech Stack
-            </span>
-            <div className="flex flex-wrap gap-2">
-              {coreSkills.map((skill) => (
-                <span
-                  key={skill}
-                  className="px-3 py-1.5 rounded-md text-xs font-medium bg-slate-200/80 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-300/50 dark:border-slate-700/50 hover:border-sky-500/50 transition-colors"
-                >
-                  {skill}
-                </span>
-              ))}
-            </div>
-          </div>
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(350, now);
+        osc.frequency.exponentialRampToValueAtTime(880, now + 0.2);
 
-          {/* CTAs */}
-          <div className="flex flex-wrap items-center gap-4 pt-4">
-            <a
-              href="#projects"
-              className="px-6 py-3 rounded-lg text-sm font-semibold text-white bg-sky-600 hover:bg-sky-500 shadow-sm transition-all duration-200"
-            >
-              View Work
-            </a>
-            <a
-              href="#contact"
-              className="px-6 py-3 rounded-lg text-sm font-semibold text-slate-800 dark:text-slate-200 bg-slate-200/80 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 transition-all duration-200"
-            >
-              Get in Touch
-            </a>
-          </div>
-        </div>
+        gain.gain.setValueAtTime(0.08, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
 
-        {/* Profile Image */}
-        {/* <div className="relative shrink-0 w-36 h-36 sm:w-48 sm:h-48">
-          <img
-            src="TODO"
-            alt="Justin Siu"
-            className="w-full h-full object-cover rounded-2xl shadow-lg ring-2 ring-slate-200 dark:ring-slate-800"
-          />
-        </div> */}
-      </div>
-    </section>
-  );
-};
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+
+        osc.start();
+        osc.stop(now + 0.2);
+    }
+
+    playToggle() {
+        if (!this.enabled) return;
+        this.init();
+        const now = this.ctx.currentTime;
+
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(320, now);
+        osc.frequency.exponentialRampToValueAtTime(640, now + 0.12);
+
+        gain.gain.setValueAtTime(0.08, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
+
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+
+        osc.start();
+        osc.stop(now + 0.12);
+    }
+}
+
+const sounds = new SoundEngine();
 
 // ==========================================
-// 3. EXPERIENCE COMPONENT (Box-Free Timeline)
+// 2. DATA DEFINITIONS
 // ==========================================
-const Experience = () => {
-  const experiences = [
+const CARDS_DATA = [
     {
-        role: 'Software Developer',
-        company: 'A Thinking Ape',
-        period: 'May 2026 - Aug 2026',
-        bullets: [
-            'Automated price point conversions using Django and the Apple Connect API, synchronizing prices for 100 different countries at 900 unique price points.',
-            'Improved designer authoring interfaces, implementing features with Django and React.',
-            'Reduced end to end testing time by 35% by integrating test and lint commands with Docker and Python.'
-        ],
-        tags: ["Django", "React", "Python", "JavaScript", "Docker"],
+        id: 'about',
+        title: 'Justin Siu',
+        type: 'Software Engineer',
+        cost: 2,
+        icon: 'fa-user-gear',
+        badgeBgDark: 'bg-blue-500/20 text-blue-300 border-blue-500/40',
+        badgeBgLight: 'bg-blue-100 text-blue-800 border-blue-300',
+        borderDark: 'border-blue-500/60',
+        borderLight: 'border-blue-600',
+        glowDark: '#3b82f6',
+        glowLight: '#2563eb',
+        bgDark: 'from-blue-950/90 via-slate-900 to-slate-900',
+        bgLight: 'from-blue-50 via-white to-slate-50',
+        flavorText: 'Full-stack engineer specializing in C++, Python, and reactive frontend architectures.'
     },
     {
-        role: 'Software Developer',
-        company: 'SAP',
-        period: 'Jan 2025 — Dec 2025',
-        bullets: [
-            'Built an automated test failure detection system using Python and SQL, cutting detection and alert times by 50%.',
-            'Reduced manual workload by 5 hours per week using the Gerrit and Jira REST APIs along with Docker, Python, and Java to automate the test failure notification process through a Jenkins CI/CD pipeline.',
-            'Expanded automated test coverage using Pytest, Mockito, and JavaScript/Selenium to maintain regression tests across environments',
-            'Monitored version deployments using Kubernetes, OpenLens, and Microsoft Azure pipelines.'
-        ],
-        tags: ["JavaScript", "Groovy", "Python", "Java", "SQL", "Docker", "Kubernetes"],
+        id: 'experience',
+        title: 'Career Log',
+        type: 'Experience',
+        cost: 3,
+        icon: 'fa-briefcase',
+        badgeBgDark: 'bg-indigo-500/20 text-indigo-300 border-indigo-500/40',
+        badgeBgLight: 'bg-indigo-100 text-indigo-900 border-indigo-300',
+        borderDark: 'border-indigo-500/60',
+        borderLight: 'border-indigo-600',
+        glowDark: '#6366f1',
+        glowLight: '#4f46e5',
+        bgDark: 'from-indigo-950/90 via-slate-900 to-slate-900',
+        bgLight: 'from-indigo-50 via-white to-slate-50',
+        flavorText: 'Timeline chronicle of backend engineering roles, internships, and shipped software.'
     },
     {
-        role: 'Quality Assurance Analyst',
-        company: 'ACD Systems',
-        period: 'May 2023 — Dec 2023',
-        bullets: [
-            'Developed a Python web scraper to collect images for 1,000+ keywords, used the data to test an AI recognition model, and analyzed the results with a Python script to generate a comprehensive report.',
-            'Executed over 500 tests on digital asset management and image post-processing software.',
-            'Tested account creation, licensing, and server communications using Wireshark and Debug View.'
-        ],
-        tags: ['Python', 'CSS', 'JavaScript', 'HTML'],
+        id: 'projects',
+        title: 'Inventory',
+        type: 'Projects',
+        cost: 4,
+        icon: 'fa-laptop-code',
+        badgeBgDark: 'bg-emerald-500/20 text-emerald-400 border-emerald-400/50',
+        badgeBgLight: 'bg-emerald-100 text-emerald-900 border-emerald-300',
+        borderDark: 'border-emerald-400/60',
+        borderLight: 'border-emerald-600',
+        glowDark: '#10b981',
+        glowLight: '#059669',
+        bgDark: 'from-emerald-950/90 via-slate-900 to-slate-900',
+        bgLight: 'from-emerald-50 via-white to-slate-50',
+        flavorText: 'Live applications and open-source software built with React, Stockfish, and Python.'
     },
     {
-        role: 'Quality Assurance Analyst',
-        company: 'Big Think Technologies Inc.',
-        period: 'May 2022 — Aug 2022',
-        bullets: [
-            'Engineered real-time telemetry dashboards processing streaming time-series data.',
-            'Implemented optimized SQL queries reducing database response latency by 35%.',
-            'Built dynamic user interface components with Tailwind CSS and React hooks.',
-        ],
-        tags: ['Python', 'Unity', 'C#'],
+        id: 'contact',
+        title: 'Get In Touch',
+        type: 'Contact',
+        cost: 1,
+        icon: 'fa-envelope-open-text',
+        badgeBgDark: 'bg-rose-500/20 text-rose-300 border-rose-500/40',
+        badgeBgLight: 'bg-rose-100 text-rose-900 border-rose-300',
+        borderDark: 'border-rose-500/60',
+        borderLight: 'border-rose-600',
+        glowDark: '#f43f5e',
+        glowLight: '#e11d48',
+        bgDark: 'from-rose-950/90 via-slate-900 to-slate-900',
+        bgLight: 'from-rose-50 via-white to-slate-50',
+        flavorText: 'Send a direct message to connect for software roles, projects, or collaborations.'
+    }
+];
+
+const PROJECTS_DETAILS = [
+    {
+        title: "Chess Game Analyzer",
+        tags: ["React", "TypeScript", "Stockfish API", "Tailwind CSS"],
+        description: "An interactive, web-based chess evaluation analyzer that calculates real-time move probabilities, position evaluation scores, and optimal line suggestions.",
+        link: "https://github.com",
+        icon: "fa-chess-knight",
+        stats: { ManaCost: "4", LinesOfCode: "12,400", Rating: "4.9 / 5.0" }
     },
-  ];
-
-  return (
-    <section id="experience" className="scroll-mt-24 space-y-8">
-      {/* Clean Section Header */}
-      <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white flex items-center gap-3">
-        <i className="fa-solid fa-briefcase text-sky-500 text-2xl"></i>
-        Experience
-      </h2>
-
-      {/* Minimalist Vertical Timeline Container */}
-      <div className="relative pl-6 sm:pl-10 border-l-2 border-slate-200 dark:border-slate-800 space-y-12">
-        {experiences.map((exp, index) => (
-          <div key={index} className="relative group">
-            {/* Node Dot */}
-            <div className="absolute -left-[31px] sm:-left-[47px] top-1.5 w-3.5 h-3.5 rounded-full bg-slate-300 dark:bg-slate-700 ring-4 ring-slate-50 dark:ring-slate-950 group-hover:bg-sky-500 group-hover:ring-sky-500/20 transition-all duration-200"></div>
-
-            {/* Role Header */}
-            <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1 mb-2">
-              <h3 className="text-xl font-bold text-slate-900 dark:text-white group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors">
-                {exp.role}{' '}
-                <span className="text-slate-500 dark:text-slate-400 font-normal">
-                  @ {exp.company}
-                </span>
-              </h3>
-              <time className="text-xs font-semibold tracking-wider text-slate-500 dark:text-slate-400 uppercase">
-                {exp.period}
-              </time>
-            </div>
-
-            {/* Bullet Points */}
-            <ul className="list-disc list-inside space-y-1.5 text-sm text-slate-600 dark:text-slate-300 mb-4 leading-relaxed">
-              {exp.bullets.map((bullet, bIdx) => (
-                <li key={bIdx}>{bullet}</li>
-              ))}
-            </ul>
-
-            {/* Tech Tags */}
-            <div className="flex flex-wrap gap-2">
-              {exp.tags.map((tag) => (
-                <span
-                  key={tag}
-                  className="px-2.5 py-1 rounded bg-slate-200/60 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-medium"
-                >
-                  {tag}
-                </span>
-              ))}
-            </div>
-          </div>
-        ))}
-      </div>
-    </section>
-  );
-};
+    {
+        title: "Automated Log Monitor",
+        tags: ["Python", "Docker", "SQL", "Elasticsearch"],
+        description: "An automated end-to-end log monitoring and regression tool that parses high-volume server event streams to flag anomalies and breaking schema updates.",
+        link: "https://github.com",
+        icon: "fa-server",
+        stats: { ManaCost: "4", LinesOfCode: "8,900", Rating: "4.8 / 5.0" }
+    },
+    {
+        title: "Pokémon Pull Odds Engine",
+        tags: ["React", "TypeScript", "R", "Monte Carlo"],
+        description: "A statistical probability engine utilizing Monte Carlo simulations to calculate exact card pull odds, pack EV, and set completion costs.",
+        link: "https://github.com",
+        icon: "fa-wand-magic-sparkles",
+        stats: { ManaCost: "4", LinesOfCode: "10,200", Rating: "5.0 / 5.0" }
+    }
+];
 
 // ==========================================
-// 4. PROJECTS COMPONENT
+// 3. MAIN APP COMPONENT
 // ==========================================
-const Projects = () => {
-  const [activeFilter, setActiveFilter] = useState('all');
+export default function App () {
+    const MAX_MANA_CAP = 10;
+    const [currentMana, setCurrentMana] = useState(MAX_MANA_CAP);
+    const [activeCardId, setActiveCardId] = useState('about');
+    const [animatingCardId, setAnimatingCardId] = useState(null);
+    const [isLightMode, setIsLightMode] = useState(false);
+    const [soundEnabled, setSoundEnabled] = useState(true);
+    const [activeModalProject, setActiveModalProject] = useState(null);
+    const [manaLossNotice, setManaLossNotice] = useState(null);
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  const filterOptions = [
-    { id: 'all', label: 'All' },
-    { id: 'fullstack', label: 'Full-Stack' },
-    { id: 'frontend', label: 'Front-End' },
-    { id: 'ai', label: 'AI Tools' },
-  ];
+    const activeGlowRef = useRef('#3b82f6');
 
-  const projectList = [
-    {
-      id: 1,
-      category: 'fullstack',
-      title: 'DevMetrics Dashboard',
-      description: 'A real-time developer productivity analytics suite tracking PR metrics and automated build telemetry across GitHub repositories.',
-      image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=600',
-      tags: ['React', 'Node.js', 'SQL'],
-      demoUrl: '#',
-      githubUrl: 'https://github.com',
-    },
-    {
-      id: 2,
-      category: 'ai',
-      title: 'NeuralScribe Copilot',
-      description: 'AI-powered Markdown editor featuring contextual suggestions, automated document summarization, and tone adjustments.',
-      image: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=600',
-      tags: ['Python', 'React', 'Docker'],
-      demoUrl: '#',
-      githubUrl: 'https://github.com',
-    },
-    {
-      id: 3,
-      category: 'frontend',
-      title: 'Prism UI Design System',
-      description: 'An accessible component design system engineered with dark/light mode tokens and customizable animation primitives.',
-      image: 'https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?auto=format&fit=crop&q=80&w=600',
-      tags: ['TypeScript', 'React', 'Tailwind'],
-      demoUrl: '#',
-      githubUrl: 'https://github.com',
-    },
-    {
-      id: 4,
-      category: 'fullstack',
-      title: 'HyperRoute Microservice',
-      description: 'High-throughput microservice router engineered with edge caching, dynamic rate-limiting, and realtime metric loggers.',
-      image: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&q=80&w=600',
-      tags: ['C++', 'Docker', 'R'],
-      demoUrl: '#',
-      githubUrl: 'https://github.com',
-    },
-  ];
+    // Auto-Replenishing Mana Engine
+    useEffect(() => {
+        const timer = setInterval(() => {
+            setCurrentMana(prev => {
+                if (prev < MAX_MANA_CAP) {
+                    return prev + 1;
+                }
+                return prev;
+            });
+        }, 1500);
 
-  const filteredProjects = activeFilter === 'all'
-    ? projectList
-    : projectList.filter((project) => project.category === activeFilter);
+        return () => clearInterval(timer);
+    }, []);
 
-  return (
-    <section id="projects" className="scroll-mt-24 space-y-8">
-      {/* Clean Section Header & Category Filters */}
-      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6">
-        <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white flex items-center gap-3">
-          <i className="fa-solid fa-folder-open text-sky-500 text-2xl"></i>
-          Featured Projects
-        </h2>
+    useEffect(() => {
+        if (isLightMode) {
+            document.body.classList.add('light-mode');
+        } else {
+            document.body.classList.remove('light-mode');
+        }
+    }, [isLightMode]);
 
-        {/* Filter Buttons
-        <div className="flex flex-wrap gap-2">
-          {filterOptions.map((opt) => {
-            const isActive = activeFilter === opt.id;
-            return (
-              <button
-                key={opt.id}
-                onClick={() => setActiveFilter(opt.id)}
-                className={`px-4 py-2 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
-                  isActive
-                    ? 'bg-sky-600 text-white shadow-sm'
-                    : 'bg-slate-200/70 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-700'
-                }`}
-              >
-                {opt.label}
-              </button>
-            );
-          })}
-        </div> */}
-      </div>
+    useEffect(() => {
+        const activeCard = CARDS_DATA.find(c => c.id === activeCardId);
+        if (activeCard) {
+            activeGlowRef.current = isLightMode ? activeCard.glowLight : activeCard.glowDark;
+        }
+    }, [activeCardId, isLightMode]);
 
-      {/* Projects Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {filteredProjects.map((project) => (
-          <article
-            key={project.id}
-            className="group rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 overflow-hidden hover:border-sky-500/50 dark:hover:border-sky-500/50 shadow-sm hover:shadow-md transition-all duration-300 flex flex-col justify-between"
-          >
-            <div className="p-6 space-y-4">
-              <div className="aspect-video rounded-xl bg-slate-100 dark:bg-slate-800 overflow-hidden relative">
-                <img
-                  src={project.image}
-                  alt={project.title}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  onError={(e) => {
-                    e.target.onerror = null;
-                    e.target.src = 'https://placehold.co/600x400/1e293b/white?text=Project+Preview';
-                  }}
+    const toggleSound = () => {
+        sounds.enabled = !soundEnabled;
+        setSoundEnabled(!soundEnabled);
+        if (!soundEnabled) sounds.playHover();
+    };
+
+    const handleReplenishMana = () => {
+        sounds.playPotion();
+        setCurrentMana(MAX_MANA_CAP);
+    };
+
+    const handlePlayCard = (card) => {
+        if (card.id === activeCardId || currentMana < card.cost) return;
+
+        setCurrentMana(prev => Math.max(0, prev - card.cost));
+        setManaLossNotice(`-${card.cost} MANA`);
+        setTimeout(() => setManaLossNotice(null), 1000);
+
+        sounds.playCardPlay();
+        setAnimatingCardId(card.id);
+
+        setTimeout(() => {
+            setActiveCardId(card.id);
+            setAnimatingCardId(null);
+            // Auto-close mobile drawer when selecting a card
+            setIsMobileMenuOpen(false);
+        }, 400);
+    };
+
+    return (
+        <React.Fragment>
+
+            {/* Canvas for particle effect background */}
+            <BackgroundCanvas isLightMode={isLightMode} activeGlowRef={activeGlowRef} />
+
+            <Header 
+                currentMana={currentMana}
+                maxMana={MAX_MANA_CAP}
+                onReplenish={handleReplenishMana}
+                manaLossNotice={manaLossNotice}
+                isLightMode={isLightMode}
+                onToggleTheme={() => {
+                    sounds.playToggle();
+                    setIsLightMode(!isLightMode);
+                }}
+                soundEnabled={soundEnabled}
+                onToggleSound={toggleSound}
+                isMobileMenuOpen={isMobileMenuOpen}
+                onToggleMobileMenu={() => {
+                    sounds.playToggle();
+                    setIsMobileMenuOpen(!isMobileMenuOpen);
+                }}
+            />
+
+            <main className="w-full max-w-6xl mx-auto px-4 pt-24 pb-12 md:pb-48 flex-grow flex flex-col items-center justify-center z-10">
+                <MainStage 
+                    activeCardId={activeCardId} 
+                    isLightMode={isLightMode} 
+                    onOpenModal={(idx) => setActiveModalProject(PROJECTS_DETAILS[idx])} 
                 />
-              </div>
-              <div className="space-y-2">
-                <h3 className="text-xl font-bold text-slate-900 dark:text-white group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors">
-                  {project.title}
-                </h3>
-                <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
-                  {project.description}
-                </p>
-              </div>
+            </main>
+
+            {/* Desktop Card Hand Dock */}
+            <div className="hidden md:block">
+                <CardHand 
+                    cards={CARDS_DATA}
+                    activeCardId={activeCardId}
+                    animatingCardId={animatingCardId}
+                    currentMana={currentMana}
+                    isLightMode={isLightMode}
+                    onPlayCard={handlePlayCard}
+                />
             </div>
 
-            <div className="px-6 pb-6 space-y-4">
-              <div className="flex flex-wrap gap-2">
-                {project.tags.map((tag) => (
-                  <span
-                    key={tag}
-                    className="px-2.5 py-1 rounded bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-medium"
-                  >
-                    {tag}
-                  </span>
-                ))}
-              </div>
+            {/* Mobile Card Menu Drawer Overlay */}
+            {isMobileMenuOpen && (
+                <MobileMenuDrawer 
+                    cards={CARDS_DATA}
+                    activeCardId={activeCardId}
+                    animatingCardId={animatingCardId}
+                    currentMana={currentMana}
+                    maxMana={MAX_MANA_CAP}
+                    isLightMode={isLightMode}
+                    soundEnabled={soundEnabled}
+                    onPlayCard={handlePlayCard}
+                    onReplenish={handleReplenishMana}
+                    onToggleTheme={() => {
+                        sounds.playToggle();
+                        setIsLightMode(!isLightMode);
+                    }}
+                    onToggleSound={toggleSound}
+                    onClose={() => setIsMobileMenuOpen(false)}
+                />
+            )}
 
-              {/* Card Action Links */}
-              <div className="flex items-center space-x-4 pt-3 border-t border-slate-100 dark:border-slate-800/80">
-                <a
-                  href={project.demoUrl}
-                  className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:text-sky-600 dark:hover:text-sky-400 transition-colors"
-                >
-                  <i className="fa-solid fa-arrow-up-right-from-square"></i> Live Demo
-                </a>
-                <a
-                  href={project.githubUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:text-sky-600 dark:hover:text-sky-400 transition-colors"
-                >
-                  <i className="fa-brands fa-github"></i> Repository
-                </a>
-              </div>
+            {activeModalProject && (
+                <ProjectModal 
+                    project={activeModalProject} 
+                    isLightMode={isLightMode} 
+                    onClose={() => setActiveModalProject(null)} 
+                />
+            )}
+        </React.Fragment>
+    );
+}
+
+// ==========================================
+// 4. HEADER COMPONENT
+// ==========================================
+function Header({ currentMana, maxMana, onReplenish, manaLossNotice, isLightMode, onToggleTheme, soundEnabled, onToggleSound, isMobileMenuOpen, onToggleMobileMenu }) {
+    return (
+        <header className="w-full px-4 sm:px-6 py-3 sm:py-4 flex justify-between items-center z-20 backdrop-blur-md border-b transition-colors duration-400 fixed top-0 left-0" style={{ backgroundColor: 'var(--header-bg)', borderColor: 'var(--header-border)' }}>
+            
+            {/* Name Section (Top Left) */}
+            <div className="flex items-center space-x-3">
+                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-500 font-bold shadow-sm">
+                    <i className="fa-solid fa-code text-base sm:text-lg"></i>
+                </div>
+                <div>
+                    <h1 className="text-base sm:text-lg md:text-xl font-extrabold tracking-tight text-amber-500 dark:text-amber-400 hover:text-amber-400 dark:hover:text-amber-300 transition-colors duration-200">Justin Siu</h1>
+                    <p className="text-[10px] sm:text-xs font-semibold text-slate-700 dark:text-slate-200 tracking-wide uppercase">Software Engineer</p>
+                </div>
             </div>
-          </article>
-        ))}
-      </div>
-    </section>
-  );
-};
+
+            {/* Desktop Top Header Controls */}
+            <div className="hidden md:flex flex-col items-center relative">
+                <div className="header-mana-badge flex items-center space-x-1 sm:space-x-1.5 bg-slate-900/90 dark:bg-slate-900/90 border border-blue-500/40 px-3 py-1.5 rounded-full shadow-inner transition-colors duration-300">
+                    <i className="fa-solid fa-gem text-blue-500 dark:text-blue-400 text-xs sm:text-sm animate-pulse"></i>
+                    <span className="text-xs sm:text-sm font-black tracking-wider text-blue-700 dark:text-blue-300">
+                        {currentMana} / {maxMana} <span className="text-[10px] font-semibold text-blue-600 dark:text-blue-300/90 uppercase hidden sm:inline ml-1">MANA</span>
+                    </span>
+                </div>
+                {manaLossNotice && (
+                    <div className="absolute -bottom-6 text-xs font-black text-rose-500 dark:text-rose-400 animate-mana-loss tracking-widest pointer-events-none">
+                        {manaLossNotice}
+                    </div>
+                )}
+            </div>
+
+            <div className="hidden md:flex items-center space-x-2 sm:space-x-3">
+                <button 
+                    onClick={onReplenish}
+                    title="Replenish Mana Potion"
+                    className="p-2 sm:px-3 sm:py-1.5 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 text-amber-600 dark:text-amber-400 border border-amber-500/30 transition-all duration-200 text-xs sm:text-sm font-semibold flex items-center space-x-1.5 shadow-sm active:scale-95"
+                >
+                    <i className="fa-solid fa-flask text-xs"></i>
+                    <span className="hidden sm:inline">Refill</span>
+                </button>
+
+                <button 
+                    onClick={onToggleSound}
+                    title="Toggle Audio Effects"
+                    className="header-toggle-btn w-8 h-8 sm:w-9 sm:h-9 rounded-lg transition-all duration-200 flex items-center justify-center text-xs sm:text-sm active:scale-95 border"
+                >
+                    <i className={`fa-solid ${soundEnabled ? 'fa-volume-high text-blue-500' : 'fa-volume-xmark text-slate-400'}`}></i>
+                </button>
+
+                <button 
+                    onClick={onToggleTheme}
+                    title="Toggle Light/Dark Realm"
+                    className="header-toggle-btn w-8 h-8 sm:w-9 sm:h-9 rounded-lg transition-all duration-200 flex items-center justify-center text-xs sm:text-sm active:scale-95 border"
+                >
+                    <i className={`fa-solid ${isLightMode ? 'fa-moon text-indigo-600' : 'fa-sun text-amber-400'}`}></i>
+                </button>
+            </div>
+
+            {/* Mobile Hamburger Menu Toggle Button */}
+            <div className="md:hidden flex items-center">
+                <button
+                    onClick={onToggleMobileMenu}
+                    className="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-500 active:scale-95 transition-all"
+                    aria-label="Toggle Deck Menu"
+                >
+                    <i className={`fa-solid ${isMobileMenuOpen ? 'fa-xmark text-lg' : 'fa-bars-staggered text-lg'}`}></i>
+                </button>
+            </div>
+        </header>
+    );
+}
 
 // ==========================================
-// 5. CONTACT & FOOTER COMPONENT
+// 5. MOBILE MENU DRAWER COMPONENT
 // ==========================================
-const ContactFooter = () => {
-  const currentYear = new Date().getFullYear();
+function MobileMenuDrawer({ cards, activeCardId, animatingCardId, currentMana, maxMana, isLightMode, soundEnabled, onPlayCard, onReplenish, onToggleTheme, onToggleSound, onClose }) {
+    return (
+        <div className="fixed inset-0 z-50 md:hidden flex flex-col bg-slate-950/95 dark:bg-slate-950/95 backdrop-blur-xl animate-in fade-in duration-200">
+            <div className="w-full h-full p-6 flex flex-col justify-between overflow-y-auto" style={{ backgroundColor: 'var(--modal-bg)', color: 'var(--text-main)' }}>
+                
+                {/* Header & Controls in Mobile Drawer */}
+                <div className="flex items-center justify-between pb-4 border-b border-slate-700/50">
+                    <div className="flex items-center space-x-2">
+                        <div className="header-mana-badge flex items-center space-x-1.5 bg-slate-900/90 border border-blue-500/40 px-3 py-1.5 rounded-full shadow-inner">
+                            <i className="fa-solid fa-gem text-blue-400 text-xs animate-pulse"></i>
+                            <span className="text-xs font-black tracking-wider text-blue-300">
+                                {currentMana} / {maxMana} <span className="text-[10px] font-semibold text-blue-300/90 uppercase ml-1">MANA</span>
+                            </span>
+                        </div>
+                        <button 
+                            onClick={onReplenish}
+                            className="px-3 py-1 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/30 text-xs font-semibold flex items-center space-x-1 active:scale-95 transition-transform"
+                        >
+                            <i className="fa-solid fa-flask text-[10px]"></i>
+                            <span>Refill</span>
+                        </button>
+                    </div>
 
-  return (
-    <footer className="border-t border-slate-200 dark:border-slate-800 bg-white/60 dark:bg-slate-950/60 pt-12 pb-8">
-      <div className="max-w-5xl mx-auto px-8 md:px-16 lg:px-24 space-y-12">
-        {/* Contact Section */}
-        <section id="contact" className="scroll-mt-24 space-y-6">
-          <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white flex items-center gap-3">
-            <i className="fa-solid fa-paper-plane text-sky-500 text-2xl"></i>
-            Get In Touch
-          </h2>
-          <p className="text-base text-slate-600 dark:text-slate-300 max-w-xl leading-relaxed">
-            Whether you have a project in mind, want to discuss software engineering, or just want to connect, feel free to reach out.
-          </p>
+                    <div className="flex items-center space-x-2">
+                        <button 
+                            onClick={onToggleSound}
+                            className="header-toggle-btn w-9 h-9 rounded-xl flex items-center justify-center text-xs border active:scale-95 transition-transform"
+                        >
+                            <i className={`fa-solid ${soundEnabled ? 'fa-volume-high text-blue-500' : 'fa-volume-xmark text-slate-400'}`}></i>
+                        </button>
 
-          {/* Social Links with Font Awesome Classes */}
-          <div className="flex flex-wrap items-center gap-4 pt-2">
-            <a
-              href="mailto:alex@example.com"
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-lg text-sm font-semibold text-white bg-sky-600 hover:bg-sky-500 shadow-sm transition-all duration-200"
-            >
-              <i className="fa-solid fa-envelope"></i> alex@example.com
-            </a>
-            <a
-              href="https://github.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-5 py-3 rounded-lg text-sm font-semibold text-slate-700 dark:text-slate-200 bg-slate-200/80 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 transition-all duration-200"
-            >
-              <i className="fa-brands fa-github text-base"></i> GitHub
-            </a>
-            <a
-              href="https://linkedin.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-5 py-3 rounded-lg text-sm font-semibold text-slate-700 dark:text-slate-200 bg-slate-200/80 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 transition-all duration-200"
-            >
-              <i className="fa-brands fa-linkedin text-base"></i> LinkedIn
-            </a>
-          </div>
-        </section>
+                        <button 
+                            onClick={onToggleTheme}
+                            className="header-toggle-btn w-9 h-9 rounded-xl flex items-center justify-center text-xs border active:scale-95 transition-transform"
+                        >
+                            <i className={`fa-solid ${isLightMode ? 'fa-moon text-indigo-600' : 'fa-sun text-amber-400'}`}></i>
+                        </button>
 
-        {/* Footer Links & Copyright */}
-        <div className="pt-8 border-t border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500 dark:text-slate-400">
-          <a
-            href="#about"
-            className="inline-flex items-center gap-1 hover:text-sky-600 dark:hover:text-sky-400 transition-colors"
-          >
-            Back to Top <i className="fa-solid fa-chevron-up text-xs"></i>
-          </a>
+                        <button 
+                            onClick={onClose}
+                            className="w-9 h-9 rounded-xl bg-rose-500/10 text-rose-500 flex items-center justify-center text-sm border border-rose-500/30 active:scale-95 transition-transform"
+                        >
+                            <i className="fa-solid fa-xmark"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div className="flex-1 my-auto py-6 flex flex-col justify-center">
+                    <h3 className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-4 flex items-center space-x-2">
+                        <i className="fa-solid fa-layer-group text-amber-400"></i>
+                        <span>Select Deck Card</span>
+                    </h3>
+
+                    {/* Fullscreen Grid of Mobile Playable Cards */}
+                    <div className="grid grid-cols-2 gap-4">
+                        {cards.map((card) => {
+                            const isActive = card.id === activeCardId;
+                            const canAfford = currentMana >= card.cost;
+                            const isDisabled = !canAfford || isActive;
+
+                            return (
+                                <div
+                                    key={card.id}
+                                    onClick={() => !isDisabled && onPlayCard(card)}
+                                    className={`mobile-card tcg-card relative w-full h-48 rounded-2xl border-2 p-3.5 flex flex-col justify-between select-none bg-gradient-to-b ${isLightMode ? card.bgLight : card.bgDark} ${isLightMode ? card.borderLight : card.borderDark} ${isDisabled ? 'card-disabled' : 'cursor-pointer active:scale-95'} transition-all`}
+                                >
+                                    <div className="flex justify-between items-start">
+                                        <div className="w-6 h-6 rounded-full bg-blue-600 text-white font-black text-xs flex items-center justify-center border border-blue-300 shadow-md">
+                                            {card.cost}
+                                        </div>
+                                        <span className={`text-[9px] font-bold uppercase px-2 py-0.5 rounded-full border ${isLightMode ? card.badgeBgLight : card.badgeBgDark}`}>
+                                            {isActive ? 'ACTIVE' : !canAfford ? 'MANA LOW' : 'PLAY'}
+                                        </span>
+                                    </div>
+
+                                    <div className="my-auto text-center flex flex-col items-center">
+                                        <div className="card-icon text-3xl mb-1.5 text-sky-600 dark:text-sky-400 drop-shadow-sm">
+                                            <i className={`fa-solid ${card.icon}`}></i>
+                                        </div>
+                                        <h4 className="text-sm font-extrabold leading-tight">{card.title}</h4>
+                                    </div>
+
+                                    <p className="text-[9px] text-center leading-tight line-clamp-2 italic font-medium opacity-80">
+                                        "{card.flavorText}"
+                                    </p>
+                                </div>
+                            );
+                        })}
+                    </div>
+                </div>
+
+                {/* Bottom Close Drawer Action Button */}
+                <button 
+                    onClick={onClose}
+                    className="w-full py-3 rounded-xl bg-slate-800/80 dark:bg-slate-800/80 hover:bg-slate-700 text-slate-300 text-xs font-bold border border-slate-700/60 flex items-center justify-center space-x-2 active:scale-95 transition-transform"
+                >
+                    <span>Return to Stage</span>
+                    <i className="fa-solid fa-chevron-down text-[10px]"></i>
+                </button>
+            </div>
         </div>
-      </div>
-    </footer>
-  );
-};
+    );
+}
 
 // ==========================================
-// 6. MAIN APP COMPONENT
+// 6. MAIN STAGE VIEW COMPONENT
 // ==========================================
-export default function App() {
-  const [theme, setTheme] = useState('dark');
+function MainStage({ activeCardId, isLightMode, onOpenModal }) {
+    const card = CARDS_DATA.find(c => c.id === activeCardId) || CARDS_DATA[0];
 
-  // Load Font Awesome CSS dynamically
-  useEffect(() => {
-    const linkId = 'font-awesome-cdn';
-    if (!document.getElementById(linkId)) {
-      const link = document.createElement('link');
-      link.id = linkId;
-      link.rel = 'stylesheet';
-      link.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css';
-      document.head.appendChild(link);
-    }
-  }, []);
+    return (
+        <div className="stage-container w-full rounded-2xl p-5 sm:p-8 md:p-10 border shadow-2xl transition-all duration-400 backdrop-blur-md">
+            <div className="flex items-center space-x-4 mb-6 pb-4 border-b border-slate-700/60 dark:border-slate-800">
+                <div className={`w-12 h-12 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center text-xl sm:text-2xl border ${isLightMode ? card.badgeBgLight : card.badgeBgDark}`}>
+                    <i className={`fa-solid ${card.icon}`}></i>
+                </div>
+                <div>
+                    <span className="text-xs font-bold uppercase tracking-widest text-slate-400 dark:text-slate-300 block mb-0.5">{card.type}</span>
+                    <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-slate-100" style={{ color: 'var(--text-main)' }}>{card.title}</h2>
+                </div>
+            </div>
 
-  // Sync theme with document root class
-  useEffect(() => {
-    const root = document.documentElement;
-    if (theme === 'dark') {
-      root.classList.add('dark');
-    } else {
-      root.classList.remove('dark');
-    }
-  }, [theme]);
+            {activeCardId === 'about' && <AboutContent/>}
 
-  const toggleTheme = () => {
-    setTheme((prevTheme) => (prevTheme === 'dark' ? 'light' : 'dark'));
-  };
+            {activeCardId === 'experience' && <ExperienceContent/>}
 
-  return (
-    <div className="bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 antialiased selection:bg-sky-500 selection:text-white min-h-screen flex flex-col justify-between transition-colors duration-300">
-      <Navbar theme={theme} toggleTheme={toggleTheme} />
+            {activeCardId === 'projects' && (
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    {PROJECTS_DETAILS.map((proj, idx) => (
+                        <div key={idx} className="content-box-bg p-5 rounded-xl border hover:border-emerald-400/60 transition-all duration-300 flex flex-col justify-between group">
+                            <div>
+                                <div className="flex items-start space-x-3 mb-3">
+                                    <div className="w-10 h-10 rounded-lg bg-emerald-500/10 border border-emerald-400/50 flex-shrink-0 flex items-center justify-center text-emerald-500 dark:text-emerald-400 group-hover:scale-110 transition-transform mt-0.5">
+                                        <i className={`fa-solid ${proj.icon} text-base`}></i>
+                                    </div>
+                                    <h3 className="text-base font-bold text-slate-900 dark:text-slate-100 group-hover:text-emerald-500 dark:group-hover:text-emerald-400 transition-colors leading-snug break-words" style={{ color: 'var(--text-main)' }}>
+                                        {proj.title}
+                                    </h3>
+                                </div>
+                                <div className="flex flex-wrap gap-1.5 my-3">
+                                    {proj.tags.map((t, i) => (
+                                        <span key={i} className="text-[10px] font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-300 border border-emerald-400/30 px-2 py-0.5 rounded-md">
+                                            {t}
+                                        </span>
+                                    ))}
+                                </div>
+                                <p className="text-xs leading-relaxed mb-4 font-medium" style={{ color: 'var(--text-muted)' }}>{proj.description}</p>
+                            </div>
+                            <button 
+                                onClick={() => onOpenModal(idx)}
+                                className="w-full py-2 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-600 dark:text-emerald-300 border border-emerald-400/40 text-xs font-bold transition-colors flex items-center justify-center space-x-2"
+                            >
+                                <span>Inspect Artifact</span>
+                                <i className="fa-solid fa-arrow-right text-[10px]"></i>
+                            </button>
+                        </div>
+                    ))}
+                </div>
+            )}
 
-      <main className="max-w-5xl mx-auto px-8 md:px-16 lg:px-24 space-y-16 md:space-y-24 py-12 md:py-16 flex-grow w-full">
-        <About />
-        <Experience />
-        <Projects />
-      </main>
+            {activeCardId === 'contact' && (
+                <form onSubmit={(e) => { e.preventDefault(); alert("Scroll sent successfully!"); }} className="space-y-4 max-w-lg mx-auto">
+                    <div>
+                        <label className="block text-xs font-bold uppercase mb-1" style={{ color: 'var(--text-muted)' }}>Your Name</label>
+                        <input required type="text" placeholder="Traveler / Recruiter Name" className="input-box-bg w-full px-4 py-2.5 rounded-xl border text-sm focus:outline-none focus:border-rose-500 transition-colors font-medium" />
+                    </div>
+                    <div>
+                        <label className="block text-xs font-bold uppercase mb-1" style={{ color: 'var(--text-muted)' }}>Email Address</label>
+                        <input required type="email" placeholder="alex@realm.com" className="input-box-bg w-full px-4 py-2.5 rounded-xl border text-sm focus:outline-none focus:border-rose-500 transition-colors font-medium" />
+                    </div>
+                    <div>
+                        <label className="block text-xs font-bold uppercase mb-1" style={{ color: 'var(--text-muted)' }}>Scroll Message</label>
+                        <textarea required rows="3" placeholder="Write your message or inquiry here..." className="input-box-bg w-full px-4 py-2.5 rounded-xl border text-sm focus:outline-none focus:border-rose-500 transition-colors resize-none font-medium"></textarea>
+                    </div>
+                    <button type="submit" className="w-full py-3 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-extrabold text-sm transition-colors shadow-lg shadow-rose-600/30">
+                        Send Summon Scroll
+                    </button>
+                </form>
+            )}
+        </div>
+    );
+}
 
-      <ContactFooter />
-    </div>
-  );
+// ==========================================
+// 7. CARD HAND DOCK COMPONENT (DESKTOP)
+// ==========================================
+function CardHand({ cards, activeCardId, animatingCardId, currentMana, isLightMode, onPlayCard }) {
+    return (
+        <div id="hand-dock" className="fixed bottom-0 left-0 right-0 z-30 flex flex-col items-center pb-2 pt-8 pointer-events-auto" style={{ background: 'var(--dock-bg)' }}>
+            <div id="dock-tooltip" className="px-3 py-1 rounded-full border text-[11px] font-extrabold shadow-md mb-2 flex items-center space-x-1.5 transition-all">
+                <i className="fa-solid fa-hand-pointer text-xs"></i>
+                <span>Hover deck to expand & play cards</span>
+            </div>
+
+            <div className="flex justify-center items-end px-4">
+                {cards.map((card) => {
+                    const isActive = card.id === activeCardId;
+                    const isAnimating = card.id === animatingCardId;
+                    const canAfford = currentMana >= card.cost;
+                    const isDisabled = !canAfford || isActive;
+
+                    return (
+                        <div
+                            key={card.id}
+                            onMouseEnter={() => !isDisabled && sounds.playHover()}
+                            onClick={() => !isDisabled && onPlayCard(card)}
+                            className={`hand-card tcg-card relative w-36 sm:w-44 h-52 sm:h-64 rounded-xl border-2 p-3 sm:p-4 flex flex-col justify-between cursor-pointer select-none bg-gradient-to-b ${isLightMode ? card.bgLight : card.bgDark} ${isLightMode ? card.borderLight : card.borderDark} ${isAnimating ? 'animate-play' : ''} ${isDisabled ? 'card-disabled' : ''} ${isActive ? 'active-card' : ''}`}
+                        >
+                            <div className="flex justify-between items-start">
+                                <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-blue-600 text-white font-black text-xs sm:text-sm flex items-center justify-center border border-blue-300 shadow-md">
+                                    {card.cost}
+                                </div>
+                                <span className={`text-[9px] sm:text-[10px] font-bold uppercase px-2 py-0.5 rounded-full border ${isLightMode ? card.badgeBgLight : card.badgeBgDark}`}>
+                                    {isActive ? 'ACTIVE' : !canAfford ? 'MANA LOW' : card.type.split(' ')[1] || 'CARD'}
+                                </span>
+                            </div>
+
+                            <div className="my-auto text-center flex flex-col items-center">
+                                <div className="card-icon text-2xl sm:text-3xl mb-2 text-slate-800 dark:text-slate-100">
+                                    <i className={`fa-solid ${card.icon}`}></i>
+                                </div>
+                                <h3 className="text-xs sm:text-sm font-extrabold leading-tight">{card.title}</h3>
+                            </div>
+
+                            <p className="text-[9px] sm:text-[10px] text-center leading-tight line-clamp-2 italic font-medium">
+                                "{card.flavorText}"
+                            </p>
+                        </div>
+                    );
+                })}
+            </div>
+        </div>
+    );
+}
+
+// ==========================================
+// 8. PROJECT MODAL COMPONENT
+// ==========================================
+function ProjectModal({ project, isLightMode, onClose }) {
+    return (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
+            <div className="modal-box-bg w-full max-w-lg rounded-2xl p-6 bg-slate-900 border border-slate-800 text-slate-100 shadow-2xl relative animate-in fade-in zoom-in duration-200">
+                <button 
+                    onClick={onClose}
+                    className="absolute top-4 right-4 text-slate-400 hover:text-slate-100 text-lg w-8 h-8 flex items-center justify-center rounded-full hover:bg-slate-800/80 transition-colors"
+                >
+                    <i className="fa-solid fa-xmark"></i>
+                </button>
+
+                <div className="flex items-center space-x-3 mb-3">
+                    <div className="w-10 h-10 rounded-lg bg-emerald-500/10 border border-emerald-400/50 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
+                        <i className={`fa-solid ${project.icon} text-base`}></i>
+                    </div>
+                    <div>
+                        <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest block">Artifact Inspection</span>
+                        <h3 className="text-2xl font-black text-slate-900 dark:text-slate-100">{project.title}</h3>
+                    </div>
+                </div>
+
+                <p className="text-sm text-slate-700 dark:text-slate-200 leading-relaxed mb-6 font-medium">{project.description}</p>
+
+                <div className="content-box-bg grid grid-cols-3 gap-2 p-3 rounded-xl bg-slate-950/60 border border-slate-800 text-center mb-6">
+                    <div>
+                        <span className="block text-[10px] uppercase font-bold text-slate-700 dark:text-slate-200">Mana Cost</span>
+                        <span className="text-sm font-extrabold text-blue-600 dark:text-blue-400">{project.stats.ManaCost}</span>
+                    </div>
+                    <div>
+                        <span className="block text-[10px] uppercase font-bold text-slate-700 dark:text-slate-200">Lines of Code</span>
+                        <span className="text-sm font-extrabold text-emerald-600 dark:text-emerald-400">{project.stats.LinesOfCode}</span>
+                    </div>
+                    <div>
+                        <span className="block text-[10px] uppercase font-bold text-slate-700 dark:text-slate-200">Rating</span>
+                        <span className="text-sm font-extrabold text-amber-600 dark:text-amber-400">{project.stats.Rating}</span>
+                    </div>
+                </div>
+
+                <div className="flex justify-end space-x-3">
+                    <button 
+                        onClick={onClose}
+                        className="px-4 py-2 rounded-lg bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold transition-colors"
+                    >
+                        Close
+                    </button>
+                    <a 
+                        href={project.link} 
+                        target="_blank" 
+                        rel="noreferrer"
+                        className="px-4 py-2 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-black transition-colors flex items-center space-x-2"
+                    >
+                        <span>Repository</span>
+                        <i className="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+// ==========================================
+// 9. CANVAS BACKGROUND PARTICLES COMPONENT
+// ==========================================
+function BackgroundCanvas({ isLightMode, activeGlowRef }) {
+    useEffect(() => {
+        const canvas = document.getElementById('bg-canvas');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+
+        let width = (canvas.width = window.innerWidth);
+        let height = (canvas.height = window.innerHeight);
+
+        const handleResize = () => {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        };
+
+        window.addEventListener('resize', handleResize);
+
+        const particles = Array.from({ length: 45 }, () => ({
+            x: Math.random() * width,
+            y: Math.random() * height,
+            radius: Math.random() * 2 + 1,
+            vx: (Math.random() - 0.5) * 0.4,
+            vy: (Math.random() - 0.5) * 0.4,
+            alpha: Math.random() * 0.5 + 0.2
+        }));
+
+        let animId;
+        const render = () => {
+            ctx.clearRect(0, 0, width, height);
+
+            particles.forEach(p => {
+                p.x += p.vx;
+                p.y += p.vy;
+
+                if (p.x < 0) p.x = width;
+                if (p.x > width) p.x = 0;
+                if (p.y < 0) p.y = height;
+                if (p.y > height) p.y = 0;
+
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                ctx.fillStyle = activeGlowRef.current || '#3b82f6';
+                ctx.globalAlpha = p.alpha * (isLightMode ? 0.25 : 0.4);
+                ctx.fill();
+            });
+
+            animId = requestAnimationFrame(render);
+        };
+
+        render();
+
+        return () => {
+            window.removeEventListener('resize', handleResize);
+            cancelAnimationFrame(animId);
+        };
+    }, [isLightMode]);
+
+    return null;
 }
