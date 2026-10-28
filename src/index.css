@@ -17,6 +17,13 @@
     --tooltip-text: #60a5fa;
     --content-box-bg: rgba(15, 23, 42, 0.7);
     --content-box-border: #1e293b;
+
+    /* Variety Colors 1-5 (Dark Mode) */
+    --variety-bg-1: rgba(59, 130, 246, 0.15); --variety-text-1: #60a5fa; --variety-border-1: rgba(59, 130, 246, 0.3);
+    --variety-bg-2: rgba(16, 185, 129, 0.15); --variety-text-2: #34d399; --variety-border-2: rgba(16, 185, 129, 0.3);
+    --variety-bg-3: rgba(168, 85, 247, 0.15); --variety-text-3: #c084fc; --variety-border-3: rgba(168, 85, 247, 0.3);
+    --variety-bg-4: rgba(245, 158, 11, 0.15); --variety-text-4: #fbbf24; --variety-border-4: rgba(245, 158, 11, 0.3);
+    --variety-bg-5: rgba(244, 63, 94, 0.15); --variety-text-5: #fb7185; --variety-border-5: rgba(244, 63, 94, 0.3);
 }
 
 body.light-mode {
@@ -34,6 +41,13 @@ body.light-mode {
     --tooltip-text: #1d4ed8;
     --content-box-bg: #f1f5f9;
     --content-box-border: #cbd5e1;
+
+    /* Variety Colors 1-5 (Light Mode) */
+    --variety-bg-1: #eff6ff; --variety-text-1: #1d4ed8; --variety-border-1: #bfdbfe;
+    --variety-bg-2: #ecfdf5; --variety-text-2: #047857; --variety-border-2: #a7f3d0;
+    --variety-bg-3: #faf5ff; --variety-text-3: #7e22ce; --variety-border-3: #e9d5ff;
+    --variety-bg-4: #fffbeb; --variety-text-4: #b45309; --variety-border-4: #fde68a;
+    --variety-bg-5: #fff1f2; --variety-text-5: #be123c; --variety-border-5: #fecdd3;
 }
 
 body {

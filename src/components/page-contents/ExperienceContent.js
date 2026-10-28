@@ -40,16 +40,46 @@ const ExperienceContent = () => {
         return widgetData.map((data) => {
             return (
                 <div className="content-box-bg p-4 rounded-xl border flex items-start space-x-4">
-                    <div className="text-indigo-500 dark:text-indigo-400 text-lg mt-1"><i className={`fa-solid ${data.icon}`}></i></div>
-                    <div>
-                        <h3 className="text-base font-bold text-slate-900 dark:text-slate-100" style={{ color: 'var(--text-main)' }}>{data.position} — {data.company}</h3>
-                        <span className="text-xs font-semibold text-slate-400 dark:text-slate-300 block my-1">{data.dates}</span>
-                        <p className="text-xs sm:text-sm text-slate-300 dark:text-slate-200 mt-2 font-medium" style={{ color: 'var(--text-muted)' }}>{data.summary}</p>
-                        {/* <div className="text-xs sm:text-sm flex flex-row text-slate-300 dark:text-slate-200 font-medium" style={{ color: 'var(--text-muted)' }}>
-                            {data.badges.map((name) => {
-                                return <div className="px-4 py-2 mx-1 border rounded-full border-blue-500/40 transition-all duration-200 flex items-center space-x-1.5 shadow-sm active:scale-95">{name}</div>
+                    <div className="text-indigo-500 text-lg mt-1">
+                        <i className={`fa-solid ${data.icon}`}></i>
+                    </div>
+                    <div className="flex-1">
+                        {/* Company Name (Moved above, smaller & lighter) */}
+                        <span className="text-xs font-semibold tracking-wider uppercase block mb-0.5" style={{ color: 'var(--text-muted)', opacity: 0.85 }}>
+                            {data.company}
+                        </span>
+
+                        {/* Job Title */}
+                        <h3 className="text-base font-bold" style={{ color: 'var(--text-main)' }}>
+                            {data.position}
+                        </h3>
+                        <span className="text-xs font-semibold text-slate-400 block my-1">
+                            {data.dates}
+                        </span>
+                        <p className="text-xs sm:text-sm mt-2 font-medium" style={{ color: 'var(--text-muted)' }}>
+                            {data.summary}
+                        </p>
+                        
+                        {/* Variety tags mapped using the updated CSS variables */}
+                        <div className="flex flex-wrap items-center gap-2 mt-3">
+                            {data.badges.map((name, index) => {
+                                const colorNum = (index % 5) + 1;
+
+                                return (
+                                    <div 
+                                        key={index} 
+                                        className="px-3 py-1 text-xs font-medium rounded-full border transition-all duration-200 flex items-center space-x-1.5 shadow-sm hover:scale-105 active:scale-95"
+                                        style={{
+                                            backgroundColor: `var(--variety-bg-${colorNum})`,
+                                            color: `var(--variety-text-${colorNum})`,
+                                            borderColor: `var(--variety-border-${colorNum})`
+                                        }}
+                                    >
+                                        <span>{name}</span>
+                                    </div>
+                                );
                             })}
-                        </div> */}
+                        </div>
                     </div>
                 </div>
             )

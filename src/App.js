@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import AboutContent from './components/page-contents/AboutContent';
 import ExperienceContent from './components/page-contents/ExperienceContent';
+import ProjectsContent, {PROJECTS_DETAILS} from './components/page-contents/ProjectsContent';
 
 // ==========================================
 // 1. WEB AUDIO SYNTHESIZER
@@ -191,33 +192,6 @@ const CARDS_DATA = [
     }
 ];
 
-const PROJECTS_DETAILS = [
-    {
-        title: "Chess Game Analyzer",
-        tags: ["React", "TypeScript", "Stockfish API", "Tailwind CSS"],
-        description: "An interactive, web-based chess evaluation analyzer that calculates real-time move probabilities, position evaluation scores, and optimal line suggestions.",
-        link: "https://github.com",
-        icon: "fa-chess-knight",
-        stats: { ManaCost: "4", LinesOfCode: "12,400", Rating: "4.9 / 5.0" }
-    },
-    {
-        title: "Automated Log Monitor",
-        tags: ["Python", "Docker", "SQL", "Elasticsearch"],
-        description: "An automated end-to-end log monitoring and regression tool that parses high-volume server event streams to flag anomalies and breaking schema updates.",
-        link: "https://github.com",
-        icon: "fa-server",
-        stats: { ManaCost: "4", LinesOfCode: "8,900", Rating: "4.8 / 5.0" }
-    },
-    {
-        title: "Pokémon Pull Odds Engine",
-        tags: ["React", "TypeScript", "R", "Monte Carlo"],
-        description: "A statistical probability engine utilizing Monte Carlo simulations to calculate exact card pull odds, pack EV, and set completion costs.",
-        link: "https://github.com",
-        icon: "fa-wand-magic-sparkles",
-        stats: { ManaCost: "4", LinesOfCode: "10,200", Rating: "5.0 / 5.0" }
-    }
-];
-
 // ==========================================
 // 3. MAIN APP COMPONENT
 // ==========================================
@@ -360,8 +334,7 @@ export default function App () {
 
             {activeModalProject && (
                 <ProjectModal 
-                    project={activeModalProject} 
-                    isLightMode={isLightMode} 
+                    project={activeModalProject}  
                     onClose={() => setActiveModalProject(null)} 
                 />
             )}
@@ -382,21 +355,21 @@ function Header({ currentMana, maxMana, onReplenish, manaLossNotice, isLightMode
                     <i className="fa-solid fa-code text-base sm:text-lg"></i>
                 </div>
                 <div>
-                    <h1 className="text-base sm:text-lg md:text-xl font-extrabold tracking-tight text-amber-500 dark:text-amber-400 hover:text-amber-400 dark:hover:text-amber-300 transition-colors duration-200">Justin Siu</h1>
-                    <p className="text-[10px] sm:text-xs font-semibold text-slate-700 dark:text-slate-200 tracking-wide uppercase">Software Engineer</p>
+                    <h1 className="text-base sm:text-lg md:text-xl font-extrabold tracking-tight text-amber-500 hover:text-amber-400 transition-colors duration-200">Justin Siu</h1>
+                    <p className="text-[10px] sm:text-xs font-semibold text-slate-700 tracking-wide uppercase">Software Engineer</p>
                 </div>
             </div>
 
             {/* Desktop Top Header Controls */}
             <div className="hidden md:flex flex-col items-center relative">
-                <div className="header-mana-badge flex items-center space-x-1 sm:space-x-1.5 bg-slate-900/90 dark:bg-slate-900/90 border border-blue-500/40 px-3 py-1.5 rounded-full shadow-inner transition-colors duration-300">
-                    <i className="fa-solid fa-gem text-blue-500 dark:text-blue-400 text-xs sm:text-sm animate-pulse"></i>
-                    <span className="text-xs sm:text-sm font-black tracking-wider text-blue-700 dark:text-blue-300">
-                        {currentMana} / {maxMana} <span className="text-[10px] font-semibold text-blue-600 dark:text-blue-300/90 uppercase hidden sm:inline ml-1">MANA</span>
+                <div className="header-mana-badge flex items-center space-x-1 sm:space-x-1.5 bg-slate-900/90 border border-blue-500/40 px-3 py-1.5 rounded-full shadow-inner transition-colors duration-300">
+                    <i className="fa-solid fa-gem text-blue-500 text-xs sm:text-sm animate-pulse"></i>
+                    <span className="text-xs sm:text-sm font-black tracking-wider text-blue-700">
+                        {currentMana} / {maxMana} <span className="text-[10px] font-semibold text-blue-600 uppercase hidden sm:inline ml-1">MANA</span>
                     </span>
                 </div>
                 {manaLossNotice && (
-                    <div className="absolute -bottom-6 text-xs font-black text-rose-500 dark:text-rose-400 animate-mana-loss tracking-widest pointer-events-none">
+                    <div className="absolute -bottom-6 text-xs font-black text-rose-500 animate-mana-loss tracking-widest pointer-events-none">
                         {manaLossNotice}
                     </div>
                 )}
@@ -406,7 +379,7 @@ function Header({ currentMana, maxMana, onReplenish, manaLossNotice, isLightMode
                 <button 
                     onClick={onReplenish}
                     title="Replenish Mana Potion"
-                    className="p-2 sm:px-3 sm:py-1.5 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 text-amber-600 dark:text-amber-400 border border-amber-500/30 transition-all duration-200 text-xs sm:text-sm font-semibold flex items-center space-x-1.5 shadow-sm active:scale-95"
+                    className="p-2 sm:px-3 sm:py-1.5 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 text-amber-600 border border-amber-500/30 transition-all duration-200 text-xs sm:text-sm font-semibold flex items-center space-x-1.5 shadow-sm active:scale-95"
                 >
                     <i className="fa-solid fa-flask text-xs"></i>
                     <span className="hidden sm:inline">Refill</span>
@@ -448,7 +421,7 @@ function Header({ currentMana, maxMana, onReplenish, manaLossNotice, isLightMode
 // ==========================================
 function MobileMenuDrawer({ cards, activeCardId, animatingCardId, currentMana, maxMana, isLightMode, soundEnabled, onPlayCard, onReplenish, onToggleTheme, onToggleSound, onClose }) {
     return (
-        <div className="fixed inset-0 z-50 md:hidden flex flex-col bg-slate-950/95 dark:bg-slate-950/95 backdrop-blur-xl animate-in fade-in duration-200">
+        <div className="fixed inset-0 z-50 md:hidden flex flex-col bg-slate-950/95 backdrop-blur-xl animate-in fade-in duration-200">
             <div className="w-full h-full p-6 flex flex-col justify-between overflow-y-auto" style={{ backgroundColor: 'var(--modal-bg)', color: 'var(--text-main)' }}>
                 
                 {/* Header & Controls in Mobile Drawer */}
@@ -522,7 +495,7 @@ function MobileMenuDrawer({ cards, activeCardId, animatingCardId, currentMana, m
                                     </div>
 
                                     <div className="my-auto text-center flex flex-col items-center">
-                                        <div className="card-icon text-3xl mb-1.5 text-sky-600 dark:text-sky-400 drop-shadow-sm">
+                                        <div className="card-icon text-3xl mb-1.5 text-sky-600 drop-shadow-sm">
                                             <i className={`fa-solid ${card.icon}`}></i>
                                         </div>
                                         <h4 className="text-sm font-extrabold leading-tight">{card.title}</h4>
@@ -540,7 +513,7 @@ function MobileMenuDrawer({ cards, activeCardId, animatingCardId, currentMana, m
                 {/* Bottom Close Drawer Action Button */}
                 <button 
                     onClick={onClose}
-                    className="w-full py-3 rounded-xl bg-slate-800/80 dark:bg-slate-800/80 hover:bg-slate-700 text-slate-300 text-xs font-bold border border-slate-700/60 flex items-center justify-center space-x-2 active:scale-95 transition-transform"
+                    className="w-full py-3 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-300 text-xs font-bold border border-slate-700/60 flex items-center justify-center space-x-2 active:scale-95 transition-transform"
                 >
                     <span>Return to Stage</span>
                     <i className="fa-solid fa-chevron-down text-[10px]"></i>
@@ -558,13 +531,13 @@ function MainStage({ activeCardId, isLightMode, onOpenModal }) {
 
     return (
         <div className="stage-container w-full rounded-2xl p-5 sm:p-8 md:p-10 border shadow-2xl transition-all duration-400 backdrop-blur-md">
-            <div className="flex items-center space-x-4 mb-6 pb-4 border-b border-slate-700/60 dark:border-slate-800">
+            <div className="flex items-center space-x-4 mb-6 pb-4 border-b border-slate-700/60">
                 <div className={`w-12 h-12 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center text-xl sm:text-2xl border ${isLightMode ? card.badgeBgLight : card.badgeBgDark}`}>
                     <i className={`fa-solid ${card.icon}`}></i>
                 </div>
                 <div>
-                    <span className="text-xs font-bold uppercase tracking-widest text-slate-400 dark:text-slate-300 block mb-0.5">{card.type}</span>
-                    <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-slate-100" style={{ color: 'var(--text-main)' }}>{card.title}</h2>
+                    <span className="text-xs font-bold uppercase tracking-widest text-slate-400 block mb-0.5">{card.type}</span>
+                    <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900" style={{ color: 'var(--text-main)' }}>{card.title}</h2>
                 </div>
             </div>
 
@@ -572,39 +545,7 @@ function MainStage({ activeCardId, isLightMode, onOpenModal }) {
 
             {activeCardId === 'experience' && <ExperienceContent/>}
 
-            {activeCardId === 'projects' && (
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    {PROJECTS_DETAILS.map((proj, idx) => (
-                        <div key={idx} className="content-box-bg p-5 rounded-xl border hover:border-emerald-400/60 transition-all duration-300 flex flex-col justify-between group">
-                            <div>
-                                <div className="flex items-start space-x-3 mb-3">
-                                    <div className="w-10 h-10 rounded-lg bg-emerald-500/10 border border-emerald-400/50 flex-shrink-0 flex items-center justify-center text-emerald-500 dark:text-emerald-400 group-hover:scale-110 transition-transform mt-0.5">
-                                        <i className={`fa-solid ${proj.icon} text-base`}></i>
-                                    </div>
-                                    <h3 className="text-base font-bold text-slate-900 dark:text-slate-100 group-hover:text-emerald-500 dark:group-hover:text-emerald-400 transition-colors leading-snug break-words" style={{ color: 'var(--text-main)' }}>
-                                        {proj.title}
-                                    </h3>
-                                </div>
-                                <div className="flex flex-wrap gap-1.5 my-3">
-                                    {proj.tags.map((t, i) => (
-                                        <span key={i} className="text-[10px] font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-300 border border-emerald-400/30 px-2 py-0.5 rounded-md">
-                                            {t}
-                                        </span>
-                                    ))}
-                                </div>
-                                <p className="text-xs leading-relaxed mb-4 font-medium" style={{ color: 'var(--text-muted)' }}>{proj.description}</p>
-                            </div>
-                            <button 
-                                onClick={() => onOpenModal(idx)}
-                                className="w-full py-2 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-600 dark:text-emerald-300 border border-emerald-400/40 text-xs font-bold transition-colors flex items-center justify-center space-x-2"
-                            >
-                                <span>Inspect Artifact</span>
-                                <i className="fa-solid fa-arrow-right text-[10px]"></i>
-                            </button>
-                        </div>
-                    ))}
-                </div>
-            )}
+            {activeCardId === 'projects' && <ProjectsContent onOpenModal={onOpenModal}/>}
 
             {activeCardId === 'contact' && (
                 <form onSubmit={(e) => { e.preventDefault(); alert("Scroll sent successfully!"); }} className="space-y-4 max-w-lg mx-auto">
@@ -664,7 +605,7 @@ function CardHand({ cards, activeCardId, animatingCardId, currentMana, isLightMo
                             </div>
 
                             <div className="my-auto text-center flex flex-col items-center">
-                                <div className="card-icon text-2xl sm:text-3xl mb-2 text-slate-800 dark:text-slate-100">
+                                <div className="card-icon text-2xl sm:text-3xl mb-2 text-slate-800">
                                     <i className={`fa-solid ${card.icon}`}></i>
                                 </div>
                                 <h3 className="text-xs sm:text-sm font-extrabold leading-tight">{card.title}</h3>
@@ -684,7 +625,7 @@ function CardHand({ cards, activeCardId, animatingCardId, currentMana, isLightMo
 // ==========================================
 // 8. PROJECT MODAL COMPONENT
 // ==========================================
-function ProjectModal({ project, isLightMode, onClose }) {
+function ProjectModal({ project, onClose }) {
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
             <div className="modal-box-bg w-full max-w-lg rounded-2xl p-6 bg-slate-900 border border-slate-800 text-slate-100 shadow-2xl relative animate-in fade-in zoom-in duration-200">
@@ -696,36 +637,36 @@ function ProjectModal({ project, isLightMode, onClose }) {
                 </button>
 
                 <div className="flex items-center space-x-3 mb-3">
-                    <div className="w-10 h-10 rounded-lg bg-emerald-500/10 border border-emerald-400/50 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
+                    <div className="w-10 h-10 rounded-lg bg-emerald-500/10 border border-emerald-400/50 flex items-center justify-center text-emerald-600">
                         <i className={`fa-solid ${project.icon} text-base`}></i>
                     </div>
                     <div>
-                        <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest block">Artifact Inspection</span>
-                        <h3 className="text-2xl font-black text-slate-900 dark:text-slate-100">{project.title}</h3>
+                        <span className="text-xs font-bold text-emerald-600 uppercase tracking-widest block">Artifact Inspection</span>
+                        <h3 className="text-2xl font-black text-slate-900">{project.title}</h3>
                     </div>
                 </div>
 
-                <p className="text-sm text-slate-700 dark:text-slate-200 leading-relaxed mb-6 font-medium">{project.description}</p>
+                <p className="text-sm text-slate-700 leading-relaxed mb-6 font-medium" style={{ color: 'var(--text-muted)' }}>{project.description}</p>
 
                 <div className="content-box-bg grid grid-cols-3 gap-2 p-3 rounded-xl bg-slate-950/60 border border-slate-800 text-center mb-6">
                     <div>
-                        <span className="block text-[10px] uppercase font-bold text-slate-700 dark:text-slate-200">Mana Cost</span>
-                        <span className="text-sm font-extrabold text-blue-600 dark:text-blue-400">{project.stats.ManaCost}</span>
+                        <span className="block text-[10px] uppercase font-bold text-slate-700" style={{ color: 'var(--text-muted)' }}>Mana Cost</span>
+                        <span className="text-sm font-extrabold text-blue-600">{project.stats.ManaCost}</span>
                     </div>
                     <div>
-                        <span className="block text-[10px] uppercase font-bold text-slate-700 dark:text-slate-200">Lines of Code</span>
-                        <span className="text-sm font-extrabold text-emerald-600 dark:text-emerald-400">{project.stats.LinesOfCode}</span>
+                        <span className="block text-[10px] uppercase font-bold text-slate-700" style={{ color: 'var(--text-muted)' }}>Lines of Code</span>
+                        <span className="text-sm font-extrabold text-emerald-600">{project.stats.LinesOfCode}</span>
                     </div>
                     <div>
-                        <span className="block text-[10px] uppercase font-bold text-slate-700 dark:text-slate-200">Rating</span>
-                        <span className="text-sm font-extrabold text-amber-600 dark:text-amber-400">{project.stats.Rating}</span>
+                        <span className="block text-[10px] uppercase font-bold text-slate-700" style={{ color: 'var(--text-muted)' }}>Rating</span>
+                        <span className="text-sm font-extrabold text-amber-600">{project.stats.Rating}</span>
                     </div>
                 </div>
 
                 <div className="flex justify-end space-x-3">
                     <button 
                         onClick={onClose}
-                        className="px-4 py-2 rounded-lg bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold transition-colors"
+                        className="px-4 py-2 rounded-lg bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs font-bold transition-colors"
                     >
                         Close
                     </button>
