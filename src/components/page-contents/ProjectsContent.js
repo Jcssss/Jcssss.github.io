@@ -87,7 +87,8 @@ const ProjectsContent = () => {
                                 href={proj.link}
                                 target="_blank"
                                 rel="noreferrer"
-                                className="flex-1 py-2 px-3 rounded-lg bg-slate-500/10 hover:bg-slate-500/20 text-slate-400 hover:text-slate-200 border border-slate-500/30 text-xs font-bold transition-all flex items-center justify-center space-x-1.5 shadow-sm active:scale-95"
+                                className="flex-1 py-2 px-3 rounded-lg border text-xs font-bold transition-all duration-200 flex items-center justify-center space-x-1.5 shadow-sm active:scale-95 bg-blue-500/10 hover:bg-blue-500/20"
+                                style={{ color: 'var(--variety-text-1)', borderColor: 'var(--variety-border-1)'}}
                             >
                                 <i className="fa-brands fa-github text-xs"></i>
                                 <span>Code</span>
