@@ -421,7 +421,7 @@ function Header({ currentMana, maxMana, onReplenish, manaLossNotice, isLightMode
 // ==========================================
 // 5. MOBILE MENU DRAWER COMPONENT
 // ==========================================
-function MobileMenuDrawer({ cards, activeCardId, animatingCardId, currentMana, maxMana, isLightMode, soundEnabled, onPlayCard, onReplenish, onToggleTheme, onToggleSound, onClose }) {
+function MobileMenuDrawer({ cards, activeCardId, currentMana, maxMana, isLightMode, soundEnabled, onPlayCard, onReplenish, onToggleTheme, onToggleSound, onClose }) {
     return (
         <div className="fixed inset-0 z-50 md:hidden flex flex-col bg-slate-950/95 backdrop-blur-xl animate-in fade-in duration-200">
             <div className="w-full h-full p-6 flex flex-col justify-between overflow-y-auto" style={{ backgroundColor: 'var(--modal-bg)', color: 'var(--text-main)' }}>

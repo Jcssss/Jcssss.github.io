@@ -39,7 +39,7 @@ body.light-mode {
     --tooltip-bg: rgba(255, 255, 255, 0.95);
     --tooltip-border: rgba(59, 130, 246, 0.5);
     --tooltip-text: #1640b4;
-    --content-box-bg: #fbfdff;
+    --content-box-bg: hsl(240, 100%, 100%);
     --content-box-border: #cbd5e1;
 
     /* Variety Colors 1-5 (Light Mode) */
@@ -246,7 +246,7 @@ body:not(.light-mode) .header-toggle-btn:hover {
 }
 
 body.light-mode .header-toggle-btn {
-    background-color: #e2e8f0 !important;
+    background-color: #f1f6fd !important;
     border-color: #cbd5e1 !important;
     color: #0f172a !important;
 }
