@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 
 const ExperienceContent = () => {
     const widgetData = useMemo(() => ([
@@ -24,7 +24,7 @@ const ExperienceContent = () => {
             icon: "fa-shield-halved",
             dates: "May 2023 - Dec 2023",
             summary: "Tested and analyzed data on AI recognition software for image post-processing software.",
-            badges: ["Python", "CSS", "JavaScript", "Machine Learning"]
+            badges: ["Python", "CSS", "JavaScript"]
         },
         {
             company: "Big Think Technologies Inc.",
@@ -32,7 +32,7 @@ const ExperienceContent = () => {
             icon: "fa-shield-halved",
             dates: "May 2022 - Aug 2022",
             summary: "Manual testing and automated data analysis of the crypto-currency based game Space Tokens.",
-            badges: ["Python", "Cardano", "Block-chain", "Unity", "C#"]
+            badges: ["Python", "Unity", "C#"]
         }
     ]), [])
 
@@ -40,7 +40,7 @@ const ExperienceContent = () => {
         return widgetData.map((data) => {
             return (
                 <div className="content-box-bg p-4 rounded-xl border flex items-start space-x-4">
-                    <div className="text-indigo-500 text-lg mt-1">
+                    <div className="text-yellow-500 text-lg mt-1">
                         <i className={`fa-solid ${data.icon}`}></i>
                     </div>
                     <div className="flex-1">

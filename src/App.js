@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import AboutContent from './components/page-contents/AboutContent';
 import ExperienceContent from './components/page-contents/ExperienceContent';
 import ProjectsContent, {PROJECTS_DETAILS} from './components/page-contents/ProjectsContent';
+import ContactContent from './components/page-contents/ContactContents';
 
 // ==========================================
 // 1. WEB AUDIO SYNTHESIZER
@@ -129,39 +130,39 @@ const CARDS_DATA = [
     {
         id: 'about',
         title: 'Justin Siu',
-        type: 'Software Engineer',
+        type: 'About',
         cost: 2,
         icon: 'fa-user-gear',
-        badgeBgDark: 'bg-blue-500/20 text-blue-300 border-blue-500/40',
-        badgeBgLight: 'bg-blue-100 text-blue-800 border-blue-300',
-        borderDark: 'border-blue-500/60',
-        borderLight: 'border-blue-600',
-        glowDark: '#3b82f6',
-        glowLight: '#2563eb',
-        bgDark: 'from-blue-950/90 via-slate-900 to-slate-900',
-        bgLight: 'from-blue-50 via-white to-slate-50',
-        flavorText: 'Full-stack engineer specializing in C++, Python, and reactive frontend architectures.'
+        badgeBgDark: 'bg-purple-500/20 text-purple-300 border-purple-500/40',
+        badgeBgLight: 'bg-purple-100 text-purple-900 border-purple-300',
+        borderDark: 'border-purple-500/60',
+        borderLight: 'border-purple-600',
+        glowDark: '#6366f1',
+        glowLight: '#4f46e5',
+        bgDark: 'from-purple-950/90 via-slate-900 to-slate-900',
+        bgLight: 'from-purple-50 via-white to-slate-50',
+        flavorText: 'Learn about the engineer behind the operation.'
     },
     {
         id: 'experience',
-        title: 'Career Log',
-        type: 'Experience',
+        title: 'Experience',
+        type: 'Career Logs',
         cost: 3,
         icon: 'fa-briefcase',
-        badgeBgDark: 'bg-indigo-500/20 text-indigo-300 border-indigo-500/40',
-        badgeBgLight: 'bg-indigo-100 text-indigo-900 border-indigo-300',
-        borderDark: 'border-indigo-500/60',
-        borderLight: 'border-indigo-600',
-        glowDark: '#6366f1',
-        glowLight: '#4f46e5',
-        bgDark: 'from-indigo-950/90 via-slate-900 to-slate-900',
-        bgLight: 'from-indigo-50 via-white to-slate-50',
-        flavorText: 'Timeline chronicle of backend engineering roles, internships, and shipped software.'
+        badgeBgDark: 'bg-yellow-500/20 text-yellow-300 border-yellow-500/40',
+        badgeBgLight: 'bg-yellow-100 text-yellow-800 border-yellow-300',
+        borderDark: 'border-yellow-500/60',
+        borderLight: 'border-yellow-600',
+        glowDark: '#f6da3b',
+        glowLight: '#ebbd25',
+        bgDark: 'from-yellow-950/90 via-slate-900 to-slate-900',
+        bgLight: 'from-yellow-50 via-white to-slate-50',
+        flavorText: 'A glimpse into the chronicled logs of my career.'
     },
     {
         id: 'projects',
-        title: 'Inventory',
-        type: 'Projects',
+        title: 'Projects',
+        type: 'Inventory',
         cost: 4,
         icon: 'fa-laptop-code',
         badgeBgDark: 'bg-emerald-500/20 text-emerald-400 border-emerald-400/50',
@@ -172,7 +173,7 @@ const CARDS_DATA = [
         glowLight: '#059669',
         bgDark: 'from-emerald-950/90 via-slate-900 to-slate-900',
         bgLight: 'from-emerald-50 via-white to-slate-50',
-        flavorText: 'Live applications and open-source software built with React, Stockfish, and Python.'
+        flavorText: "Inspect the artifacts I've forged"
     },
     {
         id: 'contact',
@@ -188,7 +189,7 @@ const CARDS_DATA = [
         glowLight: '#e11d48',
         bgDark: 'from-rose-950/90 via-slate-900 to-slate-900',
         bgLight: 'from-rose-50 via-white to-slate-50',
-        flavorText: 'Send a direct message to connect for software roles, projects, or collaborations.'
+        flavorText: "Want to get in touch? I'm ready when you are!"
     }
 ];
 
@@ -295,7 +296,8 @@ export default function App () {
                 <MainStage 
                     activeCardId={activeCardId} 
                     isLightMode={isLightMode} 
-                    onOpenModal={(idx) => setActiveModalProject(PROJECTS_DETAILS[idx])} 
+                    onOpenModal={(idx) => setActiveModalProject(PROJECTS_DETAILS[idx])}
+                    setActiveCardId={setActiveCardId}
                 />
             </main>
 
@@ -356,16 +358,16 @@ function Header({ currentMana, maxMana, onReplenish, manaLossNotice, isLightMode
                 </div>
                 <div>
                     <h1 className="text-base sm:text-lg md:text-xl font-extrabold tracking-tight text-amber-500 hover:text-amber-400 transition-colors duration-200">Justin Siu</h1>
-                    <p className="text-[10px] sm:text-xs font-semibold text-slate-700 tracking-wide uppercase">Software Engineer</p>
+                    <p className="text-[10px] sm:text-xs font-semibold tracking-wide uppercase" style={{ color: 'var(--text-main)' }}>Software Engineer</p>
                 </div>
             </div>
 
             {/* Desktop Top Header Controls */}
             <div className="hidden md:flex flex-col items-center relative">
-                <div className="header-mana-badge flex items-center space-x-1 sm:space-x-1.5 bg-slate-900/90 border border-blue-500/40 px-3 py-1.5 rounded-full shadow-inner transition-colors duration-300">
-                    <i className="fa-solid fa-gem text-blue-500 text-xs sm:text-sm animate-pulse"></i>
-                    <span className="text-xs sm:text-sm font-black tracking-wider text-blue-700">
-                        {currentMana} / {maxMana} <span className="text-[10px] font-semibold text-blue-600 uppercase hidden sm:inline ml-1">MANA</span>
+                <div className="header-mana-badge flex items-center space-x-1 sm:space-x-1.5 bg-slate-900/90 border px-3 py-1.5 rounded-full shadow-inner transition-colors duration-300" style={{ borderColor: 'var(--tooltip-border)' }}>
+                    <i className="fa-solid fa-gem text-xs sm:text-sm animate-pulse" style={{ color: 'var(--tooltip-text)' }}></i>
+                    <span className="text-xs sm:text-sm font-black tracking-wider" style={{ color: 'var(--tooltip-text)' }}>
+                        {currentMana} / {maxMana} <span className="text-[10px] font-semibold uppercase hidden sm:inline ml-1">MANA</span>
                     </span>
                 </div>
                 {manaLossNotice && (
@@ -398,7 +400,7 @@ function Header({ currentMana, maxMana, onReplenish, manaLossNotice, isLightMode
                     title="Toggle Light/Dark Realm"
                     className="header-toggle-btn w-8 h-8 sm:w-9 sm:h-9 rounded-lg transition-all duration-200 flex items-center justify-center text-xs sm:text-sm active:scale-95 border"
                 >
-                    <i className={`fa-solid ${isLightMode ? 'fa-moon text-indigo-600' : 'fa-sun text-amber-400'}`}></i>
+                    <i className={`fa-solid ${isLightMode ? 'fa-moon text-purple-600' : 'fa-sun text-amber-400'}`}></i>
                 </button>
             </div>
 
@@ -427,15 +429,15 @@ function MobileMenuDrawer({ cards, activeCardId, animatingCardId, currentMana, m
                 {/* Header & Controls in Mobile Drawer */}
                 <div className="flex items-center justify-between pb-4 border-b border-slate-700/50">
                     <div className="flex items-center space-x-2">
-                        <div className="header-mana-badge flex items-center space-x-1.5 bg-slate-900/90 border border-blue-500/40 px-3 py-1.5 rounded-full shadow-inner">
-                            <i className="fa-solid fa-gem text-blue-400 text-xs animate-pulse"></i>
-                            <span className="text-xs font-black tracking-wider text-blue-300">
-                                {currentMana} / {maxMana} <span className="text-[10px] font-semibold text-blue-300/90 uppercase ml-1">MANA</span>
+                        <div className="header-mana-badge flex items-center space-x-1 sm:space-x-1.5 bg-slate-900/90 border px-3 py-1.5 rounded-full shadow-inner" style={{ borderColor: 'var(--tooltip-border)' }}>
+                            <i className="fa-solid fa-gem text-xs sm:text-sm animate-pulse" style={{ color: 'var(--tooltip-text)' }}></i>
+                            <span className="text-xs sm:text-sm font-black tracking-wider" style={{ color: 'var(--tooltip-text)' }}>
+                                {currentMana} / {maxMana} <span className="text-[10px] font-semibold uppercase hidden sm:inline ml-1">MANA</span>
                             </span>
                         </div>
                         <button 
                             onClick={onReplenish}
-                            className="px-3 py-1 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/30 text-xs font-semibold flex items-center space-x-1 active:scale-95 transition-transform"
+                            className="px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-xs font-semibold flex items-center space-x-1 active:scale-95 transition-transform" style={{color: 'var(--variety-text-4)'}}
                         >
                             <i className="fa-solid fa-flask text-[10px]"></i>
                             <span>Refill</span>
@@ -469,7 +471,7 @@ function MobileMenuDrawer({ cards, activeCardId, animatingCardId, currentMana, m
                 <div className="flex-1 my-auto py-6 flex flex-col justify-center">
                     <h3 className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-4 flex items-center space-x-2">
                         <i className="fa-solid fa-layer-group text-amber-400"></i>
-                        <span>Select Deck Card</span>
+                        <span>Select Option</span>
                     </h3>
 
                     {/* Fullscreen Grid of Mobile Playable Cards */}
@@ -513,9 +515,9 @@ function MobileMenuDrawer({ cards, activeCardId, animatingCardId, currentMana, m
                 {/* Bottom Close Drawer Action Button */}
                 <button 
                     onClick={onClose}
-                    className="w-full py-3 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-300 text-xs font-bold border border-slate-700/60 flex items-center justify-center space-x-2 active:scale-95 transition-transform"
+                    className="w-full py-3 rounded-xl hover:bg-slate-700 text-xs font-bold border flex items-center justify-center space-x-2 active:scale-95 transition-transform" style={{backgroundColor: 'var(--tooltip-bg)', color: 'var(--tooltip-text)', borderColor: 'var(--tooltip-border)'}}
                 >
-                    <span>Return to Stage</span>
+                    <span>Return to Main Page</span>
                     <i className="fa-solid fa-chevron-down text-[10px]"></i>
                 </button>
             </div>
@@ -526,11 +528,13 @@ function MobileMenuDrawer({ cards, activeCardId, animatingCardId, currentMana, m
 // ==========================================
 // 6. MAIN STAGE VIEW COMPONENT
 // ==========================================
-function MainStage({ activeCardId, isLightMode, onOpenModal }) {
+function MainStage({ activeCardId, isLightMode, onOpenModal, setActiveCardId}) {
     const card = CARDS_DATA.find(c => c.id === activeCardId) || CARDS_DATA[0];
 
     return (
-        <div className="stage-container w-full rounded-2xl p-5 sm:p-8 md:p-10 border shadow-2xl transition-all duration-400 backdrop-blur-md">
+        <div 
+            className={`stage-container w-full rounded-2xl p-5 sm:p-8 md:p-10 border shadow-2xl transition-all duration-400 overflow-hidden ${isLightMode ? card.borderLight : card.borderDark}`}
+        >
             <div className="flex items-center space-x-4 mb-6 pb-4 border-b border-slate-700/60">
                 <div className={`w-12 h-12 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center text-xl sm:text-2xl border ${isLightMode ? card.badgeBgLight : card.badgeBgDark}`}>
                     <i className={`fa-solid ${card.icon}`}></i>
@@ -541,31 +545,13 @@ function MainStage({ activeCardId, isLightMode, onOpenModal }) {
                 </div>
             </div>
 
-            {activeCardId === 'about' && <AboutContent/>}
+            {activeCardId === 'about' && <AboutContent switchToContactSection={() => setActiveCardId('contact')}/>}
 
             {activeCardId === 'experience' && <ExperienceContent/>}
 
             {activeCardId === 'projects' && <ProjectsContent onOpenModal={onOpenModal}/>}
 
-            {activeCardId === 'contact' && (
-                <form onSubmit={(e) => { e.preventDefault(); alert("Scroll sent successfully!"); }} className="space-y-4 max-w-lg mx-auto">
-                    <div>
-                        <label className="block text-xs font-bold uppercase mb-1" style={{ color: 'var(--text-muted)' }}>Your Name</label>
-                        <input required type="text" placeholder="Traveler / Recruiter Name" className="input-box-bg w-full px-4 py-2.5 rounded-xl border text-sm focus:outline-none focus:border-rose-500 transition-colors font-medium" />
-                    </div>
-                    <div>
-                        <label className="block text-xs font-bold uppercase mb-1" style={{ color: 'var(--text-muted)' }}>Email Address</label>
-                        <input required type="email" placeholder="alex@realm.com" className="input-box-bg w-full px-4 py-2.5 rounded-xl border text-sm focus:outline-none focus:border-rose-500 transition-colors font-medium" />
-                    </div>
-                    <div>
-                        <label className="block text-xs font-bold uppercase mb-1" style={{ color: 'var(--text-muted)' }}>Scroll Message</label>
-                        <textarea required rows="3" placeholder="Write your message or inquiry here..." className="input-box-bg w-full px-4 py-2.5 rounded-xl border text-sm focus:outline-none focus:border-rose-500 transition-colors resize-none font-medium"></textarea>
-                    </div>
-                    <button type="submit" className="w-full py-3 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-extrabold text-sm transition-colors shadow-lg shadow-rose-600/30">
-                        Send Summon Scroll
-                    </button>
-                </form>
-            )}
+            {activeCardId === 'contact' && <ContactContent/>}
         </div>
     );
 }
@@ -576,9 +562,9 @@ function MainStage({ activeCardId, isLightMode, onOpenModal }) {
 function CardHand({ cards, activeCardId, animatingCardId, currentMana, isLightMode, onPlayCard }) {
     return (
         <div id="hand-dock" className="fixed bottom-0 left-0 right-0 z-30 flex flex-col items-center pb-2 pt-8 pointer-events-auto" style={{ background: 'var(--dock-bg)' }}>
-            <div id="dock-tooltip" className="px-3 py-1 rounded-full border text-[11px] font-extrabold shadow-md mb-2 flex items-center space-x-1.5 transition-all">
+            <div id="dock-tooltip" className="px-3 py-1 rounded-full border text-[11px] font-extrabold shadow-md mb-5 flex items-center space-x-1.5 transition-all">
                 <i className="fa-solid fa-hand-pointer text-xs"></i>
-                <span>Hover deck to expand & play cards</span>
+                <span>Hover to expand & play cards</span>
             </div>
 
             <div className="flex justify-center items-end px-4">
@@ -593,7 +579,7 @@ function CardHand({ cards, activeCardId, animatingCardId, currentMana, isLightMo
                             key={card.id}
                             onMouseEnter={() => !isDisabled && sounds.playHover()}
                             onClick={() => !isDisabled && onPlayCard(card)}
-                            className={`hand-card tcg-card relative w-36 sm:w-44 h-52 sm:h-64 rounded-xl border-2 p-3 sm:p-4 flex flex-col justify-between cursor-pointer select-none bg-gradient-to-b ${isLightMode ? card.bgLight : card.bgDark} ${isLightMode ? card.borderLight : card.borderDark} ${isAnimating ? 'animate-play' : ''} ${isDisabled ? 'card-disabled' : ''} ${isActive ? 'active-card' : ''}`}
+                            className={`hand-card tcg-card relative w-36 sm:w-44 h-52 sm:h-64 rounded-xl border-2 p-2.5 sm:p-3 flex flex-col justify-between cursor-pointer select-none bg-gradient-to-b ${isLightMode ? card.bgLight : card.bgDark} ${isLightMode ? card.borderLight : card.borderDark} ${isAnimating ? 'animate-play' : ''} ${isDisabled ? 'card-disabled' : ''} ${isActive ? 'active-card' : ''}`}
                         >
                             <div className="flex justify-between items-start">
                                 <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-blue-600 text-white font-black text-xs sm:text-sm flex items-center justify-center border border-blue-300 shadow-md">
@@ -604,14 +590,16 @@ function CardHand({ cards, activeCardId, animatingCardId, currentMana, isLightMo
                                 </span>
                             </div>
 
-                            <div className="my-auto text-center flex flex-col items-center">
-                                <div className="card-icon text-2xl sm:text-3xl mb-2 text-slate-800">
+                            {/* Center icon & title take up compact space */}
+                            <div className="my-1 text-center flex flex-col items-center">
+                                <div className="card-icon text-xl sm:text-2xl mb-1 text-slate-800">
                                     <i className={`fa-solid ${card.icon}`}></i>
                                 </div>
                                 <h3 className="text-xs sm:text-sm font-extrabold leading-tight">{card.title}</h3>
                             </div>
 
-                            <p className="text-[9px] sm:text-[10px] text-center leading-tight line-clamp-2 italic font-medium">
+                            {/* Flavor text expanded to allow up to 3 lines and more room */}
+                            <p className="text-[9px] sm:text-[10px] text-center leading-relaxed line-clamp-3 italic font-medium opacity-90 pb-1">
                                 "{card.flavorText}"
                             </p>
                         </div>

@@ -11,7 +11,7 @@ export const PROJECTS_DETAILS = [
     {
         title: "Team Fight Tactics Planner",
         tags: ["Typescript", "CSS", "HTML"],
-        description: "A responsive team planner for the video game Team Fight Tactics",
+        description: "A responsive team builder and strategy planner for Team Fight Tactics featuring an intuitive UI that allows seamless drag-and-drop unit placement across the board, alongside customizable item loadouts and set options.",
         demo: "https://jcssss.github.io/TFTTeamPlanner/",
         link: "https://github.com/Jcssss/TFTCompPlanner",
         icon: "fa-wand-magic-sparkles",
@@ -20,23 +20,22 @@ export const PROJECTS_DETAILS = [
     {
         title: "Green Not Greed Database",
         tags: ["Python", "PostgreSQL"],
-        description: "A relational database and text-based user interface for the company Green Not Greed.",
+        description: "A robust relational database and text-based interface built for Green Not Greed, providing comprehensive tracking, monitoring, and updating capabilities for sponsors, volunteers, and events.",
         link: "https://github.com/Jcssss/GNG",
         icon: "fa-server",
         stats: { ManaCost: "4", LinesOfCode: "10,200", Rating: "5.0 / 5.0" }
     }
 ];
 
-const ProjectsContent = ({onOpenModal}) => {
+const ProjectsContent = () => {
 
     return (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {PROJECTS_DETAILS.map((proj, idx) => (
                 <div key={idx} className="content-box-bg p-6 rounded-xl border hover:border-emerald-400/60 transition-all duration-300 flex flex-col justify-between group min-h-[240px]">
                     <div>
-                        {/* Changed items-start to items-center for vertical alignment */}
                         <div className="flex items-center space-x-3 mb-4">
-                            <div className="w-10 h-10 rounded-lg bg-emerald-500/10 border border-emerald-400/50 flex-shrink-0 flex items-center justify-center text-emerald-500  group-hover:scale-110 transition-transform">
+                            <div className="w-10 h-10 rounded-lg bg-emerald-500/10 border border-emerald-400/50 flex-shrink-0 flex items-center justify-center text-emerald-500 group-hover:scale-110 transition-transform">
                                 <i className={`fa-solid ${proj.icon} text-base`}></i>
                             </div>
                             <h3 className="text-base font-bold text-slate-900 group-hover:text-emerald-500 transition-colors leading-snug break-words" style={{ color: 'var(--text-main)' }}>
@@ -71,13 +70,29 @@ const ProjectsContent = ({onOpenModal}) => {
                             })}
                         </div>
                         
-                        <button 
-                            onClick={() => onOpenModal(idx)}
-                            className="w-full py-2.5 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-600 border border-emerald-400/40 text-xs font-bold transition-colors flex items-center justify-center space-x-2"
-                        >
-                            <span>Inspect Artifact</span>
-                            <i className="fa-solid fa-arrow-right text-[10px]"></i>
-                        </button>
+                        {/* Action Buttons: Conditionally renders Live Demo if present + Github Link */}
+                        <div className="flex items-center gap-2 pt-2 border-t border-slate-700/30">
+                            {proj.demo && (
+                                <a 
+                                    href={proj.demo}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="flex-1 py-2 px-3 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-500 border border-emerald-500/30 text-xs font-bold transition-all flex items-center justify-center space-x-1.5 shadow-sm active:scale-95"
+                                >
+                                    <span>Demo</span>
+                                    <i className="fa-solid fa-up-right-from-square text-[10px]"></i>
+                                </a>
+                            )}
+                            <a 
+                                href={proj.link}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="flex-1 py-2 px-3 rounded-lg bg-slate-500/10 hover:bg-slate-500/20 text-slate-400 hover:text-slate-200 border border-slate-500/30 text-xs font-bold transition-all flex items-center justify-center space-x-1.5 shadow-sm active:scale-95"
+                            >
+                                <i className="fa-brands fa-github text-xs"></i>
+                                <span>Code</span>
+                            </a>
+                        </div>
                     </div>
                 </div>
             ))}

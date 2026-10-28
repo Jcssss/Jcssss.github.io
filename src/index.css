@@ -38,15 +38,15 @@ body.light-mode {
     --dock-bg: linear-gradient(to top, rgba(248, 250, 252, 0.98), rgba(248, 250, 252, 0.85), transparent);
     --tooltip-bg: rgba(255, 255, 255, 0.95);
     --tooltip-border: rgba(59, 130, 246, 0.5);
-    --tooltip-text: #1d4ed8;
+    --tooltip-text: #1640b4;
     --content-box-bg: #f1f5f9;
     --content-box-border: #cbd5e1;
 
     /* Variety Colors 1-5 (Light Mode) */
     --variety-bg-1: #eff6ff; --variety-text-1: #1d4ed8; --variety-border-1: #bfdbfe;
-    --variety-bg-2: #ecfdf5; --variety-text-2: #047857; --variety-border-2: #a7f3d0;
-    --variety-bg-3: #faf5ff; --variety-text-3: #7e22ce; --variety-border-3: #e9d5ff;
-    --variety-bg-4: #fffbeb; --variety-text-4: #b45309; --variety-border-4: #fde68a;
+    --variety-bg-2: #f2fff9; --variety-text-2: #047857; --variety-border-2: #a7f3d0;
+    --variety-bg-3: #f9f2ff; --variety-text-3: #7e22ce; --variety-border-3: #e9d5ff;
+    --variety-bg-4: #fffcf1; --variety-text-4: #b45309; --variety-border-4: #fde68a;
     --variety-bg-5: #fff1f2; --variety-text-5: #be123c; --variety-border-5: #fecdd3;
 }
 
@@ -175,7 +175,6 @@ body.light-mode .tcg-card {
 
 .stage-container {
     background-color: var(--card-container-bg);
-    border-color: var(--card-container-border);
     color: var(--text-main);
     transition: background-color 0.4s ease, border-color 0.4s ease, color 0.4s ease;
 }
