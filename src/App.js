@@ -268,7 +268,7 @@ export default function App () {
     };
 
     return (
-        <div className="h-dvh flex flex-col relative overflow-y-auto overflow-x-hidden transform-gpu">
+        <div className="h-dvh flex flex-col relative overflow-x-hidden overflow-y-auto">
 
             <BackgroundCanvas isLightMode={isLightMode} activeGlowRef={activeGlowRef} />
 
@@ -422,7 +422,7 @@ function Header({ currentMana, maxMana, onReplenish, manaLossNotice, isLightMode
 // ==========================================
 function MobileMenuDrawer({ cards, activeCardId, currentMana, maxMana, isLightMode, soundEnabled, onPlayCard, onReplenish, onToggleTheme, onToggleSound, onClose }) {
     return (
-        <div className="fixed inset-0 z-50 md:hidden flex flex-col bg-slate-950/95 isolate">
+        <div className="fixed top-0 left-0 w-screen h-dvh z-50 md:hidden flex flex-col bg-slate-950/95 isolate">
             <div className="w-full h-full p-6 flex flex-col justify-between overflow-y-auto" style={{ backgroundColor: 'var(--modal-bg)', color: 'var(--text-main)' }}>
                 
                 {/* Header & Controls in Mobile Drawer */}
