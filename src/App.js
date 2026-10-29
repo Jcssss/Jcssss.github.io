@@ -492,7 +492,7 @@ function MobileMenuDrawer({ cards, activeCardId, currentMana, maxMana, isLightMo
                                             {card.cost}
                                         </div>
                                         <span className={`text-[9px] font-bold uppercase px-2 py-0.5 rounded-full border ${isLightMode ? card.badgeBgLight : card.badgeBgDark}`}>
-                                            {isActive ? 'ACTIVE' : !canAfford ? 'MANA LOW' : 'PLAY'}
+                                            {isActive ? 'ACTIVE' : !canAfford ? 'MANA LOW' : 'ACTION'}
                                         </span>
                                     </div>
 
@@ -682,12 +682,12 @@ function BackgroundCanvas({ isLightMode, activeGlowRef }) {
         if (!canvas) return;
         const ctx = canvas.getContext('2d');
 
-        let width = (canvas.width = window.innerWidth);
-        let height = (canvas.height = window.innerHeight);
+        let width = (canvas.width = document.documentElement.scrollWidth);
+        let height = (canvas.height = document.documentElement.scrollHeight);
 
         const handleResize = () => {
-            width = canvas.width = window.innerWidth;
-            height = canvas.height = window.innerHeight;
+            width = canvas.width = document.documentElement.scrollWidth;
+            height = canvas.height = document.documentElement.scrollHeight;
         };
 
         window.addEventListener('resize', handleResize);

@@ -77,8 +77,8 @@ body.light-mode .tcg-card {
 
 /* Disabled Card (Insufficient Mana or Active) */
 .tcg-card.card-disabled {
-    opacity: 0.45 !important;
-    filter: grayscale(0.55) brightness(0.75) !important;
+    opacity: 0.3 !important;
+    filter: brightness(0.9) !important;
     cursor: not-allowed !important;
     pointer-events: none !important;
 }
