@@ -208,13 +208,6 @@ export default function App () {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [bgRefreshKey, setBgRefreshKey] = useState(0);
 
-    useEffect(() => {
-        // When the mobile menu transitions from open (true) to closed (false)
-        if (!isMobileMenuOpen) {
-            forceRender(curr => !curr)
-        }
-    }, [isMobileMenuOpen]);
-
     const activeGlowRef = useRef('#3b82f6');
 
     // Auto-Replenishing Mana Engine
@@ -306,7 +299,7 @@ export default function App () {
                 }}
             />
 
-            <main className="w-full max-w-6xl mx-auto px-4 pt-24 pb-12 flex-1 flex flex-col items-center justify-center z-10" forceRenderRef={forceRenderRef}>
+            <main className="w-full max-w-6xl mx-auto px-4 pt-24 pb-12 flex-1 flex flex-col items-center justify-center z-10">
                 <MainStage 
                     activeCardId={activeCardId} 
                     isLightMode={isLightMode} 
