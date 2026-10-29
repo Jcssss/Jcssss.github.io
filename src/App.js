@@ -292,7 +292,7 @@ export default function App () {
                 }}
             />
 
-            <main className="w-full h-full max-w-6xl mx-auto px-4 pt-24 pb-12 md:pb-48 flex-grow flex flex-col items-center justify-center z-10">
+            <main className="w-full max-w-6xl mx-auto px-4 pt-24 pb-12 flex-1 flex flex-col items-center justify-center z-10">
                 <MainStage 
                     activeCardId={activeCardId} 
                     isLightMode={isLightMode} 
@@ -423,7 +423,7 @@ function Header({ currentMana, maxMana, onReplenish, manaLossNotice, isLightMode
 // ==========================================
 function MobileMenuDrawer({ cards, activeCardId, currentMana, maxMana, isLightMode, soundEnabled, onPlayCard, onReplenish, onToggleTheme, onToggleSound, onClose }) {
     return (
-        <div className="fixed inset-0 z-50 md:hidden flex flex-col bg-slate-950/95 backdrop-blur-xl animate-in fade-in duration-200">
+        <div className="fixed inset-0 z-50 md:hidden flex flex-col bg-slate-950/95 backdrop-blur-xl isolate animate-in fade-in duration-200">
             <div className="w-full h-full p-6 flex flex-col justify-between overflow-y-auto" style={{ backgroundColor: 'var(--modal-bg)', color: 'var(--text-main)' }}>
                 
                 {/* Header & Controls in Mobile Drawer */}
@@ -691,11 +691,11 @@ function BackgroundCanvas({ isLightMode, activeGlowRef }) {
         if (!canvas) return;
         const ctx = canvas.getContext('2d');
 
-        let width = (canvas.width = document.documentElement.scrollWidth);
+        let width = (canvas.width = window.innerWidth);
         let height = (canvas.height = document.documentElement.scrollHeight);
 
         const handleResize = () => {
-            width = canvas.width = document.documentElement.scrollWidth;
+            width = canvas.width = window.innerWidth;
             height = canvas.height = document.documentElement.scrollHeight;
         };
 
