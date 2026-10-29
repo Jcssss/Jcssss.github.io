@@ -206,8 +206,7 @@ export default function App () {
     const [activeModalProject, setActiveModalProject] = useState(null);
     const [manaLossNotice, setManaLossNotice] = useState(null);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
-    const [forceRenderRef, forceRender] = useState(false);
+    const [bgRefreshKey, setBgRefreshKey] = useState(0);
 
     useEffect(() => {
         // When the mobile menu transitions from open (true) to closed (false)
@@ -277,7 +276,7 @@ export default function App () {
     };
 
     return (
-        <div className="min-h-dvh flex flex-col relative overflow-x-hidden">
+        <div className="min-h-dvh flex flex-col relative overflow-x-hidden" key={bgRefreshKey}>
 
             <BackgroundCanvas isLightMode={isLightMode} activeGlowRef={activeGlowRef} />
 
@@ -290,6 +289,7 @@ export default function App () {
                 onToggleTheme={() => {
                     sounds.playToggle();
                     setIsLightMode(!isLightMode);
+                    setBgRefreshKey(prev => prev + 1);
                 }}
                 soundEnabled={soundEnabled}
                 onToggleSound={toggleSound}
@@ -302,14 +302,7 @@ export default function App () {
                         return !curr
                     });
 
-                    requestAnimationFrame(() => {
-                        const mainEl = document.querySelector('main');
-                        if (mainEl) {
-                            mainEl.style.display = 'none';
-                            void mainEl.offsetHeight; // Forces a synchronous reflow read
-                            mainEl.style.display = '';
-                        }
-                    });
+                    if (!lastVal) {setBgRefreshKey(prev => prev + 1);}
                 }}
             />
 
