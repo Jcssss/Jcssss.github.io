@@ -292,7 +292,7 @@ export default function App () {
                 }}
             />
 
-            <main className="w-full max-w-6xl mx-auto px-4 pt-24 pb-12 md:pb-48 flex-grow flex flex-col items-center justify-center z-10">
+            <main className="w-full h-full max-w-6xl mx-auto px-4 pt-24 pb-12 md:pb-48 flex-grow flex flex-col items-center justify-center z-10">
                 <MainStage 
                     activeCardId={activeCardId} 
                     isLightMode={isLightMode} 
@@ -691,11 +691,11 @@ function BackgroundCanvas({ isLightMode, activeGlowRef }) {
         if (!canvas) return;
         const ctx = canvas.getContext('2d');
 
-        let width = (canvas.width = Math.max(document.documentElement.clientWidth, window.innerWidth));
+        let width = (canvas.width = document.documentElement.scrollWidth);
         let height = (canvas.height = document.documentElement.scrollHeight);
 
         const handleResize = () => {
-            width = canvas.width = Math.max(document.documentElement.clientWidth, window.innerWidth);
+            width = canvas.width = document.documentElement.scrollWidth;
             height = canvas.height = document.documentElement.scrollHeight;
         };
 
