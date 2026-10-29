@@ -207,6 +207,9 @@ export default function App () {
     const [manaLossNotice, setManaLossNotice] = useState(null);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
+    // Used to force re-render of the page
+    const [renderKey, setRenderKey] = useState(0);
+
     const activeGlowRef = useRef('#3b82f6');
 
     // Auto-Replenishing Mana Engine
@@ -287,7 +290,8 @@ export default function App () {
                 isMobileMenuOpen={isMobileMenuOpen}
                 onToggleMobileMenu={() => {
                     sounds.playToggle();
-                    setIsMobileMenuOpen(!isMobileMenuOpen);
+                    setIsMobileMenuOpen((curr) => !curr);
+                    setRenderKey(prev => prev + 1);
                 }}
             />
 
