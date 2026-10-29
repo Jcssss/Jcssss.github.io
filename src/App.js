@@ -206,7 +206,6 @@ export default function App () {
     const [activeModalProject, setActiveModalProject] = useState(null);
     const [manaLossNotice, setManaLossNotice] = useState(null);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-    const [bgRefreshKey, setBgRefreshKey] = useState(0);
 
     const activeGlowRef = useRef('#3b82f6');
 
@@ -269,7 +268,7 @@ export default function App () {
     };
 
     return (
-        <div className="min-h-dvh flex flex-col relative overflow-x-hidden" key={bgRefreshKey}>
+        <div className="h-dvh flex flex-col relative overflow-y-auto overflow-x-hidden transform-gpu">
 
             <BackgroundCanvas isLightMode={isLightMode} activeGlowRef={activeGlowRef} />
 
@@ -282,20 +281,13 @@ export default function App () {
                 onToggleTheme={() => {
                     sounds.playToggle();
                     setIsLightMode(!isLightMode);
-                    setBgRefreshKey(prev => prev + 1);
                 }}
                 soundEnabled={soundEnabled}
                 onToggleSound={toggleSound}
                 isMobileMenuOpen={isMobileMenuOpen}
                 onToggleMobileMenu={() => {
                     sounds.playToggle();
-                    let lastVal = false
-                    setIsMobileMenuOpen((curr) => {
-                        lastVal = curr
-                        return !curr
-                    });
-
-                    if (!lastVal) {setBgRefreshKey(prev => prev + 1);}
+                    setIsMobileMenuOpen((curr) => !curr);
                 }}
             />
 

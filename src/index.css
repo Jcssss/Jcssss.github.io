@@ -50,6 +50,13 @@ body.light-mode {
     --variety-bg-5: #fff1f2; --variety-text-5: #be123c; --variety-border-5: #fecdd3;
 }
 
+html, body {
+    height: 100%;
+    overflow: hidden; /* Stops native mobile window scrolling and caching bugs */
+    margin: 0;
+    padding: 0;
+}
+
 body {
     font-family: var(--font-body);
     overflow-x: hidden;
