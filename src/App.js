@@ -207,8 +207,14 @@ export default function App () {
     const [manaLossNotice, setManaLossNotice] = useState(null);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-    // Used to force re-render of the page
-    const [renderKey, setRenderKey] = useState(0);
+    const [forceRenderRef, forceRender] = useState(false);
+
+    useEffect(() => {
+        // When the mobile menu transitions from open (true) to closed (false)
+        if (!isMobileMenuOpen) {
+            forceRender(curr => !curr)
+        }
+    }, [isMobileMenuOpen]);
 
     const activeGlowRef = useRef('#3b82f6');
 
@@ -291,13 +297,12 @@ export default function App () {
                 onToggleMobileMenu={() => {
                     sounds.playToggle();
                     setIsMobileMenuOpen((curr) => !curr);
-                    setRenderKey(prev => prev + 1);
                 }}
             />
 
             <main className="w-full max-w-6xl mx-auto px-4 pt-24 pb-12 flex-1 flex flex-col items-center justify-center z-10">
                 <MainStage 
-                    key={renderKey}
+                    forceRenderRef={forceRenderRef}
                     activeCardId={activeCardId} 
                     isLightMode={isLightMode} 
                     onOpenModal={(idx) => setActiveModalProject(PROJECTS_DETAILS[idx])}
