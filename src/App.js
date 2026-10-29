@@ -296,7 +296,20 @@ export default function App () {
                 isMobileMenuOpen={isMobileMenuOpen}
                 onToggleMobileMenu={() => {
                     sounds.playToggle();
-                    setIsMobileMenuOpen((curr) => !curr);
+                    let lastVal = false
+                    setIsMobileMenuOpen((curr) => {
+                        lastVal = curr
+                        return !curr
+                    });
+
+                    requestAnimationFrame(() => {
+                        const mainEl = document.querySelector('main');
+                        if (mainEl) {
+                            mainEl.style.display = 'none';
+                            void mainEl.offsetHeight; // Forces a synchronous reflow read
+                            mainEl.style.display = '';
+                        }
+                    });
                 }}
             />
 
