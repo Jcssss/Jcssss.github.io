@@ -297,6 +297,7 @@ export default function App () {
 
             <main className="w-full max-w-6xl mx-auto px-4 pt-24 pb-12 flex-1 flex flex-col items-center justify-center z-10">
                 <MainStage 
+                    key={renderKey}
                     activeCardId={activeCardId} 
                     isLightMode={isLightMode} 
                     onOpenModal={(idx) => setActiveModalProject(PROJECTS_DETAILS[idx])}
