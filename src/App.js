@@ -138,7 +138,7 @@ const CARDS_DATA = [
         borderDark: 'border-purple-500/60',
         borderLight: 'border-purple-600',
         glowDark: '#6366f1',
-        glowLight: '#4f46e5',
+        glowLight: '#6159fa',
         bgDark: 'from-purple-950/90 via-slate-900 to-slate-900',
         bgLight: 'from-purple-50 via-white to-slate-50',
         flavorText: 'Learn about the engineer behind the operation.'
@@ -154,7 +154,7 @@ const CARDS_DATA = [
         borderDark: 'border-yellow-500/60',
         borderLight: 'border-yellow-600',
         glowDark: '#f6da3b',
-        glowLight: '#ebbd25',
+        glowLight: '#dbb126',
         bgDark: 'from-yellow-950/90 via-slate-900 to-slate-900',
         bgLight: 'from-yellow-50 via-white to-slate-50',
         flavorText: 'A glimpse into the chronicled logs of my career.'
@@ -677,16 +677,25 @@ function ProjectModal({ project, onClose }) {
 // 9. CANVAS BACKGROUND PARTICLES COMPONENT
 // ==========================================
 function BackgroundCanvas({ isLightMode, activeGlowRef }) {
+    
+    // Keep a ref of isLightMode so the render loop always knows the latest theme
+    // without needing to restart the effect and resize the canvas.
+    const isLightModeRef = useRef(isLightMode);
+
+    useEffect(() => {
+        isLightModeRef.current = isLightMode;
+    }, [isLightMode]);
+
     useEffect(() => {
         const canvas = document.getElementById('bg-canvas');
         if (!canvas) return;
         const ctx = canvas.getContext('2d');
 
-        let width = (canvas.width = document.documentElement.scrollWidth);
+        let width = (canvas.width = Math.max(document.documentElement.clientWidth, window.innerWidth));
         let height = (canvas.height = document.documentElement.scrollHeight);
 
         const handleResize = () => {
-            width = canvas.width = document.documentElement.scrollWidth;
+            width = canvas.width = Math.max(document.documentElement.clientWidth, window.innerWidth);
             height = canvas.height = document.documentElement.scrollHeight;
         };
 
@@ -698,7 +707,7 @@ function BackgroundCanvas({ isLightMode, activeGlowRef }) {
             radius: Math.random() * 2 + 1,
             vx: (Math.random() - 0.5) * 0.4,
             vy: (Math.random() - 0.5) * 0.4,
-            alpha: Math.random() * 0.5 + 0.2
+            alpha: 1
         }));
 
         let animId;
@@ -717,7 +726,8 @@ function BackgroundCanvas({ isLightMode, activeGlowRef }) {
                 ctx.beginPath();
                 ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
                 ctx.fillStyle = activeGlowRef.current || '#3b82f6';
-                ctx.globalAlpha = p.alpha * (isLightMode ? 0.25 : 0.4);
+                // Read from the ref instead of triggering effect re-runs
+                ctx.globalAlpha = p.alpha * (isLightModeRef.current ? 0.5 : 0.4);
                 ctx.fill();
             });
 
@@ -730,7 +740,7 @@ function BackgroundCanvas({ isLightMode, activeGlowRef }) {
             window.removeEventListener('resize', handleResize);
             cancelAnimationFrame(animId);
         };
-    }, [isLightMode]);
+    }, []); // Empty array ensures it only mounts once on page load and never truncates unexpectedly!
 
     return null;
 }
