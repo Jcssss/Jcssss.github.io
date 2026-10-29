@@ -586,7 +586,7 @@ function CardHand({ cards, activeCardId, animatingCardId, currentMana, isLightMo
                                     {card.cost}
                                 </div>
                                 <span className={`text-[9px] sm:text-[10px] font-bold uppercase px-2 py-0.5 rounded-full border ${isLightMode ? card.badgeBgLight : card.badgeBgDark}`}>
-                                    {isActive ? 'ACTIVE' : !canAfford ? 'MANA LOW' : card.type.split(' ')[1] || 'CARD'}
+                                    {isActive ? 'ACTIVE' : !canAfford ? 'MANA LOW' : 'ACTION'}
                                 </span>
                             </div>
 
@@ -692,7 +692,7 @@ function BackgroundCanvas({ isLightMode, activeGlowRef }) {
 
         window.addEventListener('resize', handleResize);
 
-        const particles = Array.from({ length: 45 }, () => ({
+        const particles = Array.from({ length: 200 }, () => ({
             x: Math.random() * width,
             y: Math.random() * height,
             radius: Math.random() * 2 + 1,
