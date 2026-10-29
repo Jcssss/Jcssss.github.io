@@ -268,9 +268,8 @@ export default function App () {
     };
 
     return (
-        <React.Fragment>
+        <div className="min-h-dvh flex flex-col relative overflow-x-hidden">
 
-            {/* Canvas for particle effect background */}
             <BackgroundCanvas isLightMode={isLightMode} activeGlowRef={activeGlowRef} />
 
             <Header 
@@ -340,7 +339,7 @@ export default function App () {
                     onClose={() => setActiveModalProject(null)} 
                 />
             )}
-        </React.Fragment>
+        </div>
     );
 }
 
