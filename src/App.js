@@ -193,37 +193,6 @@ const CARDS_DATA = [
     }
 ];
 
-// 1. Add this diagnostic helper component anywhere in App.js
-function MobileDebugHUD() {
-    const [dims, setDims] = React.useState({ vw: 0, vh: 0, mainH: 0 });
-
-    React.useEffect(() => {
-        const update = () => {
-            const mainEl = document.querySelector('main');
-            setDims({
-                vw: window.innerWidth,
-                vh: window.innerHeight,
-                mainH: mainEl ? mainEl.offsetHeight : 0
-            });
-        };
-        update();
-        window.addEventListener('resize', update);
-        const interval = setInterval(update, 200); // Polls live changes when menu toggles
-        return () => {
-            window.removeEventListener('resize', update);
-            clearInterval(interval);
-        };
-    }, []);
-
-    return (
-        <div className="fixed top-20 right-4 z-[9999] bg-slate-950/90 border border-amber-500 text-amber-400 text-xs p-2.5 rounded-xl shadow-2xl pointer-events-none font-mono">
-            <div className="font-bold text-[10px] uppercase text-slate-400 mb-1">Layout Inspector</div>
-            <div>Viewport H: {dims.vh}px</div>
-            <div>Main Container H: {dims.mainH}px</div>
-        </div>
-    );
-}
-
 // ==========================================
 // 3. MAIN APP COMPONENT
 // ==========================================
@@ -300,8 +269,6 @@ export default function App () {
 
     return (
         <div className="min-h-dvh flex flex-col relative overflow-x-hidden">
-
-            <MobileDebugHUD/>
 
             <BackgroundCanvas isLightMode={isLightMode} activeGlowRef={activeGlowRef} />
 
@@ -455,7 +422,7 @@ function Header({ currentMana, maxMana, onReplenish, manaLossNotice, isLightMode
 // ==========================================
 function MobileMenuDrawer({ cards, activeCardId, currentMana, maxMana, isLightMode, soundEnabled, onPlayCard, onReplenish, onToggleTheme, onToggleSound, onClose }) {
     return (
-        <div className="fixed inset-0 z-50 md:hidden flex flex-col bg-slate-950/95 backdrop-blur-xl isolate animate-in fade-in duration-200">
+        <div className="fixed inset-0 z-50 md:hidden flex flex-col bg-slate-950/95 isolate">
             <div className="w-full h-full p-6 flex flex-col justify-between overflow-y-auto" style={{ backgroundColor: 'var(--modal-bg)', color: 'var(--text-main)' }}>
                 
                 {/* Header & Controls in Mobile Drawer */}
