@@ -11,7 +11,12 @@
     --card-container-bg: rgba(15, 23, 42, 0.95);
     --card-container-border: rgba(59, 130, 246, 0.35);
     --modal-bg: #0f172a;
-    --dock-bg: linear-gradient(to top, rgba(3, 7, 18, 0.98), rgba(3, 7, 18, 0.8), transparent);
+    --dock-bg: linear-gradient(
+        to top, 
+        rgba(3, 7, 18, 1) 0%, 
+        rgba(3, 7, 18, 1) 80%, 
+        transparent 100%
+    );
     --tooltip-bg: rgba(15, 23, 42, 0.95);
     --tooltip-border: rgba(59, 130, 246, 0.6);
     --tooltip-text: #60a5fa;
@@ -23,7 +28,7 @@
     --variety-bg-2: rgba(16, 185, 129, 0.15); --variety-text-2: #34d399; --variety-border-2: rgba(16, 185, 129, 0.3);
     --variety-bg-3: rgba(168, 85, 247, 0.15); --variety-text-3: #c084fc; --variety-border-3: rgba(168, 85, 247, 0.3);
     --variety-bg-4: rgba(245, 158, 11, 0.15); --variety-text-4: #fbbf24; --variety-border-4: rgba(245, 158, 11, 0.3);
-    --variety-bg-5: rgba(244, 63, 94, 0.15); --variety-text-5: #fb7185; --variety-border-5: rgba(244, 63, 94, 0.3);
+    --variety-bg-5: rgba(244, 63, 94, 0.15); --variety-text-5: #ff8295; --variety-border-5: rgba(244, 63, 94, 0.3);
 }
 
 body.light-mode {
@@ -35,7 +40,7 @@ body.light-mode {
     --card-container-bg: rgba(255, 255, 255, 0.97);
     --card-container-border: rgba(226, 232, 240, 0.95);
     --modal-bg: #ffffff;
-    --dock-bg: linear-gradient(to top, rgba(248, 250, 252, 0.98), rgba(248, 250, 252, 0.85), transparent);
+    --dock-bg: linear-gradient(to top, rgba(248, 250, 252, 1), rgba(248, 250, 252, 0.9), rgba(248, 250, 252, 0.7));
     --tooltip-bg: rgba(255, 255, 255, 0.95);
     --tooltip-border: rgba(59, 130, 246, 0.5);
     --tooltip-text: #1640b4;
@@ -64,30 +69,13 @@ h1, h2, h3, h4, .font-heading {
     letter-spacing: -0.025em;
 }
 
-/* TCG Card Base Styling */
-.tcg-card {
-    transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s ease, z-index 0.1s ease, filter 0.3s ease, opacity 0.3s ease;
-    transform-style: preserve-3d;
-    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 0 15px rgba(255, 255, 255, 0.05);
-}
-
 body.light-mode .tcg-card {
     box-shadow: 0 12px 28px -5px rgba(15, 23, 42, 0.12), 0 2px 10px rgba(0, 0, 0, 0.04);
 }
 
 /* Disabled Card (Insufficient Mana or Active) */
 .tcg-card.card-disabled {
-    opacity: 0.3 !important;
-    filter: brightness(0.9) !important;
     cursor: not-allowed !important;
-    pointer-events: none !important;
-}
-
-/* Active Page Card Styling */
-.tcg-card.active-card {
-    cursor: default !important;
-    opacity: 0.55 !important;
-    filter: grayscale(0.4) !important;
 }
 
 /* Mobile Cards Layout (Inside Drawer) */
@@ -100,10 +88,7 @@ body.light-mode .tcg-card {
 #hand-dock {
     transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     transform: translateY(60%);
-}
-
-#hand-dock:hover {
-    transform: translateY(0%);
+    touch-action: none;
 }
 
 /* Dock Tooltip Hover Fade Out */
@@ -113,42 +98,48 @@ body.light-mode .tcg-card {
     background-color: var(--tooltip-bg);
     border-color: var(--tooltip-border);
     color: var(--tooltip-text);
+
+    animation: soft-glow 2s ease-in-out infinite alternate;
 }
 
-#hand-dock:hover #dock-tooltip {
-    opacity: 0 !important;
-    transform: translateX(-50%) translateY(8px) scale(0.9) !important;
+@keyframes soft-glow {
+    0% {
+        --glow-alpha: 0.1;
+        /* Fixed syntax: x-offset y-offset blur spread color */
+        box-shadow: 0 0 15px 0 rgba(255, 255, 255, 0.3);
+    }
+    100% {
+        --glow-alpha: 0.5;
+        /* Grows larger and brighter */
+        box-shadow: 0 0 25px 5px rgba(255, 255, 255, 0.5);
+    }
 }
 
-/* Fanned Hand Mechanics */
-.hand-card {
-    transform-origin: bottom center;
-    will-change: transform, z-index;
-}
-
-@media (min-width: 768px) {
-    .hand-card:nth-child(1) { transform: rotate(-10deg) translateY(10px); z-index: 10; }
-    .hand-card:nth-child(2) { transform: rotate(-3deg) translateY(0px); z-index: 20; }
-    .hand-card:nth-child(3) { transform: rotate(3deg) translateY(0px); z-index: 30; }
-    .hand-card:nth-child(4) { transform: rotate(10deg) translateY(10px); z-index: 40; }
-
+/* 
+   Hover effect: Using standard media query rules to eliminate 
+   the ".mobile" class hack. This won't fire on touchscreens.
+*/
+@media (hover: hover) and (pointer: fine) {
     .hand-card:hover:not(.active-card):not(.card-disabled) {
-        transform: rotate(0deg) translateY(-65px) scale(1.18) !important;
-        z-index: 100 !important;
+        transform: rotate(0deg) translateY(-65px) scale(1.18);
+        z-index: 100;
         box-shadow: 0 20px 35px -5px rgba(0, 0, 0, 0.6), 0 0 25px rgba(59, 130, 246, 0.5);
     }
 }
 
-/* Play Spell Animation */
-@keyframes playCardAnim {
-    0% { transform: scale(1) translateY(0); opacity: 1; }
-    50% { transform: scale(1.35) translateY(-260px) rotate(0deg); opacity: 0.9; filter: brightness(1.5) drop-shadow(0 0 35px rgba(59, 130, 246, 0.9)); }
-    100% { transform: scale(0.1) translateY(-600px); opacity: 0; }
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.98);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
 }
 
-.animate-play {
-    animation: playCardAnim 0.65s ease-in forwards !important;
-    pointer-events: none;
+.animate-fade-in {
+    animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 /* Floating Mana Loss Popup */

@@ -141,6 +141,7 @@ const CARDS_DATA = [
         glowLight: '#6159fa',
         bgDark: 'from-purple-950/90 via-slate-900 to-slate-900',
         bgLight: 'from-purple-50 via-white to-slate-50',
+        effect: 'Open the About page. Cannot be played if About page is open.',
         flavorText: 'Learn about the engineer behind the operation.'
     },
     {
@@ -157,6 +158,7 @@ const CARDS_DATA = [
         glowLight: '#dbb126',
         bgDark: 'from-yellow-950/90 via-slate-900 to-slate-900',
         bgLight: 'from-yellow-50 via-white to-slate-50',
+        effect: 'Open the Experience page. Cannot be played if Experience section is open.',
         flavorText: 'A glimpse into the chronicled logs of my career.'
     },
     {
@@ -173,6 +175,7 @@ const CARDS_DATA = [
         glowLight: '#059669',
         bgDark: 'from-emerald-950/90 via-slate-900 to-slate-900',
         bgLight: 'from-emerald-50 via-white to-slate-50',
+        effect: 'Open the Projects section. Cannot be played if Projects section is open.',
         flavorText: "Inspect the artifacts I've forged"
     },
     {
@@ -189,6 +192,7 @@ const CARDS_DATA = [
         glowLight: '#e11d48',
         bgDark: 'from-rose-950/90 via-slate-900 to-slate-900',
         bgLight: 'from-rose-50 via-white to-slate-50',
+        effect: 'Open the Contact section. Cannot be played if Contact section is open.',
         flavorText: "Want to get in touch? I'm ready when you are!"
     }
 ];
@@ -206,8 +210,24 @@ export default function App () {
     const [activeModalProject, setActiveModalProject] = useState(null);
     const [manaLossNotice, setManaLossNotice] = useState(null);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [isHandOpen, setHandOpen] = useState(false);
+    const [isMobile, setIsMobile] = useState(false);
 
     const activeGlowRef = useRef('#3b82f6');
+
+    useEffect(() => {
+        // Check if the device has a coarse pointer (touch screen)
+        const mediaQuery = window.matchMedia('(pointer: coarse)');
+        
+        // Set initial state
+        setIsMobile(mediaQuery.matches);
+
+        // Listen for changes (e.g., if a user plugs a mouse into a tablet)
+        const handler = (e) => setIsMobile(e.matches);
+        mediaQuery.addEventListener('change', handler);
+
+        return () => mediaQuery.removeEventListener('change', handler);
+    }, []);
 
     // Auto-Replenishing Mana Engine
     useEffect(() => {
@@ -262,9 +282,19 @@ export default function App () {
         setTimeout(() => {
             setActiveCardId(card.id);
             setAnimatingCardId(null);
-            // Auto-close mobile drawer when selecting a card
             setIsMobileMenuOpen(false);
-        }, 400);
+        }, 300);
+    };
+
+    const handleCardClick = (card) => {
+        // On mobile, trigger a quick tap/draw animation before opening the menu drawer
+        if (!isMobile || isHandOpen) {
+            // Desktop behavior
+            const canAfford = currentMana >= card.cost;
+            const isActive = card.id === activeCardId;
+            if (!canAfford || isActive) return;
+            handlePlayCard(card);
+        }
     };
 
     return (
@@ -291,7 +321,7 @@ export default function App () {
                 }}
             />
 
-            <main className="w-full max-w-6xl mx-auto px-4 pt-24 pb-12 flex-1 flex flex-col items-center justify-center z-10">
+            <main className="w-full max-w-6xl mx-auto px-4 pt-24 pb-48 md:pb-36 flex-1 flex flex-col items-center justify-center z-10">
                 <MainStage 
                     activeCardId={activeCardId} 
                     isLightMode={isLightMode} 
@@ -300,38 +330,18 @@ export default function App () {
                 />
             </main>
 
-            {/* Desktop Card Hand Dock */}
-            <div className="hidden md:block">
-                <CardHand 
-                    cards={CARDS_DATA}
-                    activeCardId={activeCardId}
-                    animatingCardId={animatingCardId}
-                    currentMana={currentMana}
-                    isLightMode={isLightMode}
-                    onPlayCard={handlePlayCard}
-                />
-            </div>
-
-            {/* Mobile Card Menu Drawer Overlay */}
-            {isMobileMenuOpen && (
-                <MobileMenuDrawer 
-                    cards={CARDS_DATA}
-                    activeCardId={activeCardId}
-                    animatingCardId={animatingCardId}
-                    currentMana={currentMana}
-                    maxMana={MAX_MANA_CAP}
-                    isLightMode={isLightMode}
-                    soundEnabled={soundEnabled}
-                    onPlayCard={handlePlayCard}
-                    onReplenish={handleReplenishMana}
-                    onToggleTheme={() => {
-                        sounds.playToggle();
-                        setIsLightMode(!isLightMode);
-                    }}
-                    onToggleSound={toggleSound}
-                    onClose={() => setIsMobileMenuOpen(false)}
-                />
-            )}
+            {/* Universal Card Hand Dock (Always visible on mobile & desktop) */}
+            <CardHand 
+                isHandOpen={isHandOpen}
+                setHandOpen={setHandOpen}
+                isMobile={isMobile}
+                cards={CARDS_DATA}
+                activeCardId={activeCardId}
+                animatingCardId={animatingCardId}
+                currentMana={currentMana}
+                isLightMode={isLightMode}
+                onCardClick={handleCardClick}
+            />
 
             {activeModalProject && (
                 <ProjectModal 
@@ -361,32 +371,32 @@ function Header({ currentMana, maxMana, onReplenish, manaLossNotice, isLightMode
                 </div>
             </div>
 
-            {/* Desktop Top Header Controls */}
-            <div className="hidden md:flex flex-col items-center relative">
-                <div className="header-mana-badge flex items-center space-x-1 sm:space-x-1.5 bg-slate-900/90 border px-3 py-1.5 rounded-full shadow-inner transition-colors duration-300" style={{ borderColor: 'var(--tooltip-border)' }}>
-                    <i className="fa-solid fa-gem text-xs sm:text-sm animate-pulse" style={{ color: 'var(--tooltip-text)' }}></i>
-                    <span className="text-xs sm:text-sm font-black tracking-wider" style={{ color: 'var(--tooltip-text)' }}>
-                        {currentMana} / {maxMana} <span className="text-[10px] font-semibold uppercase hidden sm:inline ml-1">MANA</span>
-                    </span>
-                </div>
-                {manaLossNotice && (
-                    <div className="absolute -bottom-6 text-xs font-black text-rose-500 animate-mana-loss tracking-widest pointer-events-none">
-                        {manaLossNotice}
+            {/* Top Header Controls & Mana Meter */}
+            <div className="flex items-center space-x-2 sm:space-x-3">
+                <div className="flex flex-col items-center relative">
+                    <div className="header-mana-badge flex items-center space-x-1 sm:space-x-1.5 bg-slate-900/90 border px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-full shadow-inner transition-colors duration-300" style={{ borderColor: 'var(--tooltip-border)' }}>
+                        <i className="fa-solid fa-gem text-xs sm:text-sm animate-pulse" style={{ color: 'var(--tooltip-text)' }}></i>
+                        <span className="text-xs sm:text-sm font-black tracking-wider" style={{ color: 'var(--tooltip-text)' }}>
+                            {currentMana} / {maxMana} <span className="text-[10px] font-semibold uppercase hidden sm:inline ml-1">MANA</span>
+                        </span>
                     </div>
-                )}
-            </div>
+                    {manaLossNotice && (
+                        <div className="absolute -bottom-5 sm:-bottom-6 text-[10px] sm:text-xs font-black text-rose-500 animate-mana-loss tracking-widest pointer-events-none">
+                            {manaLossNotice}
+                        </div>
+                    )}
+                </div>
 
-            <div className="hidden md:flex items-center space-x-2 sm:space-x-3">
                 <button 
                     onClick={onReplenish}
                     title="Replenish Mana Potion"
-                    className="p-2 sm:px-3 sm:py-1.5 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 text-amber-600 border border-amber-500/30 transition-all duration-200 text-xs sm:text-sm font-semibold flex items-center space-x-1.5 shadow-sm active:scale-95"
+                    className="p-1.5 sm:px-3 sm:py-1.5 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 text-amber-600 border border-amber-500/30 transition-all duration-200 text-xs sm:text-sm font-semibold flex items-center space-x-1.5 shadow-sm active:scale-95"
                 >
                     <i className="fa-solid fa-flask text-xs"></i>
                     <span className="hidden sm:inline">Refill</span>
                 </button>
 
-                <button 
+                {/* <button 
                     onClick={onToggleSound}
                     title="Toggle Audio Effects"
                     className="header-toggle-btn w-8 h-8 sm:w-9 sm:h-9 rounded-lg transition-all duration-200 flex items-center justify-center text-xs sm:text-sm active:scale-95 border"
@@ -400,127 +410,18 @@ function Header({ currentMana, maxMana, onReplenish, manaLossNotice, isLightMode
                     className="header-toggle-btn w-8 h-8 sm:w-9 sm:h-9 rounded-lg transition-all duration-200 flex items-center justify-center text-xs sm:text-sm active:scale-95 border"
                 >
                     <i className={`fa-solid ${isLightMode ? 'fa-moon text-purple-600' : 'fa-sun text-amber-400'}`}></i>
-                </button>
-            </div>
+                </button>*/}
 
-            {/* Mobile Hamburger Menu Toggle Button */}
-            <div className="md:hidden flex items-center">
-                <button
+                {/* Mobile Hamburger Menu Toggle Button */}
+                {/* <button
                     onClick={onToggleMobileMenu}
-                    className="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-500 active:scale-95 transition-all"
+                    className="md:hidden p-2 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-500 active:scale-95 transition-all"
                     aria-label="Toggle Deck Menu"
                 >
-                    <i className={`fa-solid ${isMobileMenuOpen ? 'fa-xmark text-lg' : 'fa-bars-staggered text-lg'}`}></i>
-                </button>
+                    <i className={`fa-solid ${isMobileMenuOpen ? 'fa-xmark text-sm' : 'fa-bars-staggered text-sm'}`}></i>
+                </button> */}
             </div>
         </header>
-    );
-}
-
-// ==========================================
-// 5. MOBILE MENU DRAWER COMPONENT
-// ==========================================
-function MobileMenuDrawer({ cards, activeCardId, currentMana, maxMana, isLightMode, soundEnabled, onPlayCard, onReplenish, onToggleTheme, onToggleSound, onClose }) {
-    return (
-        <div className="fixed top-0 left-0 w-screen h-dvh z-50 md:hidden flex flex-col bg-slate-950/95 isolate">
-            <div className="w-full h-full p-6 flex flex-col justify-between overflow-y-auto" style={{ backgroundColor: 'var(--modal-bg)', color: 'var(--text-main)' }}>
-                
-                {/* Header & Controls in Mobile Drawer */}
-                <div className="flex items-center justify-between pb-4 border-b border-slate-700/50">
-                    <div className="flex items-center space-x-2">
-                        <div className="header-mana-badge flex items-center space-x-1 sm:space-x-1.5 bg-slate-900/90 border px-3 py-1.5 rounded-full shadow-inner" style={{ borderColor: 'var(--tooltip-border)' }}>
-                            <i className="fa-solid fa-gem text-xs sm:text-sm animate-pulse" style={{ color: 'var(--tooltip-text)' }}></i>
-                            <span className="text-xs sm:text-sm font-black tracking-wider" style={{ color: 'var(--tooltip-text)' }}>
-                                {currentMana} / {maxMana} <span className="text-[10px] font-semibold uppercase hidden sm:inline ml-1">MANA</span>
-                            </span>
-                        </div>
-                        <button 
-                            onClick={onReplenish}
-                            className="px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-xs font-semibold flex items-center space-x-1 active:scale-95 transition-transform" style={{color: 'var(--variety-text-4)'}}
-                        >
-                            <i className="fa-solid fa-flask text-[10px]"></i>
-                            <span>Refill</span>
-                        </button>
-                    </div>
-
-                    <div className="flex items-center space-x-2">
-                        <button 
-                            onClick={onToggleSound}
-                            className="header-toggle-btn w-9 h-9 rounded-xl flex items-center justify-center text-xs border active:scale-95 transition-transform"
-                        >
-                            <i className={`fa-solid ${soundEnabled ? 'fa-volume-high text-blue-500' : 'fa-volume-xmark text-slate-400'}`}></i>
-                        </button>
-
-                        <button 
-                            onClick={onToggleTheme}
-                            className="header-toggle-btn w-9 h-9 rounded-xl flex items-center justify-center text-xs border active:scale-95 transition-transform"
-                        >
-                            <i className={`fa-solid ${isLightMode ? 'fa-moon text-indigo-600' : 'fa-sun text-amber-400'}`}></i>
-                        </button>
-
-                        <button 
-                            onClick={onClose}
-                            className="w-9 h-9 rounded-xl bg-rose-500/10 text-rose-500 flex items-center justify-center text-sm border border-rose-500/30 active:scale-95 transition-transform"
-                        >
-                            <i className="fa-solid fa-xmark"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <div className="flex-1 my-auto py-6 flex flex-col justify-center">
-                    <h3 className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-4 flex items-center space-x-2">
-                        <i className="fa-solid fa-layer-group text-amber-400"></i>
-                        <span>Select Option</span>
-                    </h3>
-
-                    {/* Fullscreen Grid of Mobile Playable Cards */}
-                    <div className="grid grid-cols-2 gap-4">
-                        {cards.map((card) => {
-                            const isActive = card.id === activeCardId;
-                            const canAfford = currentMana >= card.cost;
-                            const isDisabled = !canAfford || isActive;
-
-                            return (
-                                <div
-                                    key={card.id}
-                                    onClick={() => !isDisabled && onPlayCard(card)}
-                                    className={`mobile-card tcg-card relative w-full h-48 rounded-2xl border-2 p-3.5 flex flex-col justify-between select-none bg-gradient-to-b ${isLightMode ? card.bgLight : card.bgDark} ${isLightMode ? card.borderLight : card.borderDark} ${isDisabled ? 'card-disabled' : 'cursor-pointer active:scale-95'} transition-all`}
-                                >
-                                    <div className="flex justify-between items-start">
-                                        <div className="w-6 h-6 rounded-full bg-blue-600 text-white font-black text-xs flex items-center justify-center border border-blue-300 shadow-md">
-                                            {card.cost}
-                                        </div>
-                                        <span className={`text-[9px] font-bold uppercase px-2 py-0.5 rounded-full border ${isLightMode ? card.badgeBgLight : card.badgeBgDark}`}>
-                                            {isActive ? 'ACTIVE' : !canAfford ? 'MANA LOW' : 'ACTION'}
-                                        </span>
-                                    </div>
-
-                                    <div className="my-auto text-center flex flex-col items-center">
-                                        <div className="card-icon text-3xl mb-1.5 text-sky-600 drop-shadow-sm">
-                                            <i className={`fa-solid ${card.icon}`}></i>
-                                        </div>
-                                        <h4 className="text-sm font-extrabold leading-tight">{card.title}</h4>
-                                    </div>
-
-                                    <p className="text-[9px] text-center leading-tight line-clamp-2 italic font-medium opacity-80">
-                                        "{card.flavorText}"
-                                    </p>
-                                </div>
-                            );
-                        })}
-                    </div>
-                </div>
-
-                {/* Bottom Close Drawer Action Button */}
-                <button 
-                    onClick={onClose}
-                    className="w-full py-3 rounded-xl hover:bg-slate-700 text-xs font-bold border flex items-center justify-center space-x-2 active:scale-95 transition-transform" style={{backgroundColor: 'var(--tooltip-bg)', color: 'var(--tooltip-text)', borderColor: 'var(--tooltip-border)'}}
-                >
-                    <span>Return to Main Page</span>
-                    <i className="fa-solid fa-chevron-down text-[10px]"></i>
-                </button>
-            </div>
-        </div>
     );
 }
 
@@ -556,51 +457,262 @@ function MainStage({ activeCardId, isLightMode, onOpenModal, setActiveCardId}) {
 }
 
 // ==========================================
-// 7. CARD HAND DOCK COMPONENT (DESKTOP)
+// 7. CARD HAND DOCK COMPONENT
 // ==========================================
-function CardHand({ cards, activeCardId, animatingCardId, currentMana, isLightMode, onPlayCard }) {
+function CardHand({ cards, activeCardId, animatingCardId, currentMana, isLightMode, onCardClick, isHandOpen, setHandOpen, isMobile}) {
+
+    const [activeIndex, setActiveIndex] = useState(0);
+    const [dragOffset, setDragOffset] = useState(0)
+    const [isDragging, setIsDragging] = useState(false);
+    const [isTransitioning, setIsTransitioning] = useState(false);
+
+    // Refs for continuous dragging behavior
+    const dragStartIndex = useRef(0);
+    const touchStartX = useRef(0);
+    const handRef = useRef(null);
+
+    // Setup click handlers for opening hand in mobile view
+    useEffect(() => {
+        if (!isMobile) {
+            return
+        }
+
+        function handleClickOutside(event) {
+            // Check if the click happened outside the referenced element
+            if (handRef.current && !handRef.current.contains(event.target) && isHandOpen) {
+                setHandOpen(false)
+            }
+        }
+
+        function handleClickInside(event) {
+            // Check if the click happened outside the referenced element
+            if (handRef.current && handRef.current.contains(event.target) && !isHandOpen) {
+                // Set timeout so clicking a hidden card doesn't trigger it
+                const timerId = setTimeout(() => setHandOpen(true), 50)
+                return () => clearTimeout(timerId)
+            }
+        }
+
+        // Bind the event listener
+        document.addEventListener('mousedown', handleClickInside);
+        document.addEventListener('mousedown', handleClickOutside);
+        
+        return () => {
+            // Clean up the event listener on unmount
+            document.removeEventListener('mousedown', handleClickOutside);
+            document.removeEventListener('mousedown', handleClickInside);
+        };
+    }, [isHandOpen, isMobile]);
+
+    // Clamps active index measure
+    useEffect(() => {
+        setActiveIndex(curr => Math.min(Math.max(0, curr), cards.length - 1))
+    }, [activeIndex, cards.length])
+
+    // Generate the tooltip text for the hand of cards
+    const getTooltipText = () => {
+        if (isHandOpen) {
+            return "Select a card to play it"
+        } else if (isMobile) {
+            return "Tap hand for options"
+        } else {
+            return "Hover to expand & play cards"
+        }
+    }
+
+    // Calculate the rotation of a card
+    const calcRotation = (index, isHandOpen, isAnimating) => {
+        if (!isHandOpen) {
+            return { visibility: 'hidden' }
+        }
+        
+        const cardWidthOffset = 150; 
+        const totalCards = cards.length;
+
+        // Anchor the moving layout calculations to dragStartIndex instead of activeIndex
+        const displayIndex = isDragging 
+            ? dragStartIndex.current - (dragOffset / cardWidthOffset)
+            : activeIndex;
+
+        // Use the live, fluid displayIndex to position the layout smoothly
+        const midIndex = isHandOpen ? displayIndex : (totalCards - 1) / 2;
+        const translateX = (index - midIndex) * cardWidthOffset;
+        const distanceFromCenter = index - midIndex;
+
+        // Scale cards based on distance from center
+        const distanceToCenterAbs = Math.abs(distanceFromCenter);
+        let scale = 1;
+        if (distanceToCenterAbs < 1) {
+            scale = 1 + (1 - distanceToCenterAbs) * 0.2; 
+        }
+
+        const currentClosestIndex = Math.round(displayIndex);
+        const isFocused = index === currentClosestIndex;
+        const arcDenominator = totalCards > 1 ? totalCards : 1;
+        
+        // Stable parabola curve for the vertical fan drop
+        let translateY = Math.pow(Math.abs(distanceFromCenter), 2) * (12 / arcDenominator);
+        translateY -= 260; 
+
+        if (isAnimating && isFocused) {
+            translateY -= 40
+        }
+
+        // Stable rotational dispersion angle 
+        const maxAngle = 7;
+        const rotate = totalCards > 1 ? (distanceFromCenter / arcDenominator) * maxAngle : 0;
+
+        return {
+            transform: `translateX(${translateX}px) translateY(${translateY}px) scale(${scale}) rotate(${rotate}deg)`,
+            zIndex: isFocused ? 100 : 50 - Math.abs(index - currentClosestIndex),
+            position: 'absolute',
+            // Turn off transitions entirely while dragging OR if catching a mid-flight animation frame
+            transition: (isDragging || !isTransitioning) 
+                ? 'none' 
+                : 'transform 0.25s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.2s ease', 
+        };
+    };
+
+
+    const handleTouchStart = (e) => {
+        // If the user taps while the deck is still animating back from a rubber-band stretch,
+        // we kill the transition state instantly to catch the card exactly where it is.
+        setIsTransitioning(false); 
+        
+        touchStartX.current = e.touches[0].clientX;
+        dragStartIndex.current = activeIndex; 
+        setIsDragging(true);
+    };
+
+    const handleTouchMove = (e) => {
+        if (!touchStartX.current) return;
+
+        const currentX = e.touches[0].clientX;
+        const difference = (touchStartX.current - currentX) * 1.2; // Positive = left drag, Negative = right drag
+        let calculatedOffset = -difference;
+
+        // 1. Structural boundaries stay the same
+        const maxRightDrag = dragStartIndex.current * 150; // Negative limit (Furthest left the deck can slide)
+        const maxLeftDrag = -(cards.length - 1 - dragStartIndex.current) * 150; // Positive limit (Furthest right the deck can slide)
+
+        // Remember: Positive calculatedOffset = dragging right. Negative = dragging left.
+        const pushingPastFirstCard = calculatedOffset > maxRightDrag;
+        const pushingPastLastCard = calculatedOffset < maxLeftDrag; 
+
+        if (pushingPastFirstCard) {
+            const excess = calculatedOffset - maxRightDrag;
+            calculatedOffset = maxRightDrag + (excess * 0.3);
+
+        } else if (pushingPastLastCard) {
+            const excess = calculatedOffset - maxLeftDrag;
+            calculatedOffset = maxLeftDrag + (excess * 0.3);
+        }
+
+        // 4. Update the live offset to trigger smooth component renders
+        setDragOffset(calculatedOffset);
+    };
+
+    const handleTouchEnd = () => {
+        setIsDragging(false);
+        touchStartX.current = 0;
+
+        const finalDragDistance = -dragOffset;
+        const rawCardPasses = finalDragDistance / 150;
+        let indexShift = Math.round(rawCardPasses);
+
+        const swipeThreshold = 40;
+        if (indexShift === 0 && Math.abs(finalDragDistance) > swipeThreshold) {
+            indexShift = Math.sign(finalDragDistance);
+        }
+
+        const targetIndex = dragStartIndex.current + indexShift;
+        const nextIndex = Math.max(0, Math.min(cards.length - 1, targetIndex));
+        
+        setActiveIndex(nextIndex);
+        
+        // Trigger transition lock state so the snap animation runs cleanly 
+        // without interruptions from subsequent premature touches.
+        setIsTransitioning(true);
+        setDragOffset(0);
+    };
+
     return (
-        <div id="hand-dock" className="fixed bottom-0 left-0 right-0 z-30 flex flex-col items-center pb-2 pt-8 pointer-events-auto" style={{ background: 'var(--dock-bg)' }}>
-            <div id="dock-tooltip" className="px-3 py-1 rounded-full border text-[11px] font-extrabold shadow-md mb-5 flex items-center space-x-1.5 transition-all">
+        <div 
+            ref={handRef}
+            id="hand-dock" 
+            className="h-400 md:h-[40%] fixed bottom-0 left-0 right-0 z-30 flex flex-col items-center pointer-events-auto" 
+            style={{ background: 'var(--dock-bg)' }}
+            onMouseOver={() => setHandOpen(true)}
+            onMouseOut={() => setHandOpen(false)}
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+        >
+            <div 
+                id="dock-tooltip" 
+                className={`px-3 py-1 rounded-full mb-5 border text-[10px] sm:text-[11px] font-extrabold shadow-md flex items-center space-x-1.5 transition-all bg-transparent sm:mb-7 mb-2 translate-y-12 ${isHandOpen ? 'hidden' : ''}`}
+            >
                 <i className="fa-solid fa-hand-pointer text-xs"></i>
-                <span>Hover to expand & play cards</span>
+                <span className="inline">
+                    {getTooltipText()}
+                </span>
             </div>
 
-            <div className="flex justify-center items-end px-4">
-                {cards.map((card) => {
+            <div 
+                onTransitionEnd={() => setIsTransitioning(false)}
+                className={`card-container relative flex justify-center items-end px-2 sm:px-4 w-full max-w-xl sm:max-w-none no-scrollbar transition-transform duration-200 h-full`}
+            >
+                {cards.map((card, i) => {
                     const isActive = card.id === activeCardId;
                     const isAnimating = card.id === animatingCardId;
                     const canAfford = currentMana >= card.cost;
                     const isDisabled = !canAfford || isActive;
+                    const isSwipeFocused = i === activeIndex;
 
                     return (
                         <div
                             key={card.id}
-                            onMouseEnter={() => !isDisabled && sounds.playHover()}
-                            onClick={() => !isDisabled && onPlayCard(card)}
-                            className={`hand-card tcg-card relative w-36 sm:w-44 h-52 sm:h-64 rounded-xl border-2 p-2.5 sm:p-3 flex flex-col justify-between cursor-pointer select-none bg-gradient-to-b ${isLightMode ? card.bgLight : card.bgDark} ${isLightMode ? card.borderLight : card.borderDark} ${isAnimating ? 'animate-play' : ''} ${isDisabled ? 'card-disabled' : ''} ${isActive ? 'active-card' : ''}`}
+                            onMouseEnter={() => !isDisabled && !isMobile && sounds.playHover()}
+                            onClick={() => {
+                                if (isSwipeFocused && isHandOpen) {
+                                    setTimeout(() => {setHandOpen(false); }, 300)
+                                    onCardClick(card);
+                                }
+                            }}
+                            className={`hand-card tcg-card relative transition-transform duration-200 
+                                w-36 md:w-44 h-52 md:h-64 rounded-xl border-2 p-2.5 md:p-3 flex flex-col justify-between cursor-pointer select-none bg-gradient-to-b 
+                                ${isLightMode ? card.bgLight : card.bgDark} ${isLightMode ? card.borderLight : card.borderDark} 
+                                ${isDisabled ? 'card-disabled' : ''}
+                            `}
+                            style={calcRotation(i, isHandOpen, isAnimating)}
                         >
-                            <div className="flex justify-between items-start">
-                                <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-blue-600 text-white font-black text-xs sm:text-sm flex items-center justify-center border border-blue-300 shadow-md">
-                                    {card.cost}
+                            {/* --- NEW HEADER: Houses Cost, Title, Icon, and Badge together at the top --- */}
+                            <div className="flex flex-col gap-1 sm:gap-1.5">
+                                {/* Top bar for structural anchors */}
+                                <div className="flex justify-between items-start w-full">
+                                    <div className="w-6 h-6 md:w-7 md:h-7 rounded-full bg-blue-600 text-white font-black text-xs md:text-sm flex items-center justify-center border border-blue-300 shadow-md shrink-0">
+                                        {card.cost}
+                                    </div>
+                                    <span className={`text-[9px] md:text-[10px] font-bold uppercase px-2 py-0.5 rounded-full border ${isLightMode ? card.badgeBgLight : card.badgeBgDark}`}>
+                                        {isActive ? 'ACTIVE' : !canAfford ? 'LOW' : 'PLAY'}
+                                    </span>
                                 </div>
-                                <span className={`text-[9px] sm:text-[10px] font-bold uppercase px-2 py-0.5 rounded-full border ${isLightMode ? card.badgeBgLight : card.badgeBgDark}`}>
-                                    {isActive ? 'ACTIVE' : !canAfford ? 'MANA LOW' : 'ACTION'}
-                                </span>
+
+                                {/* Shifted Name & Image up directly under the stats bar with zero bottom margins */}
+                                <div className="text-center flex flex-col items-center mt-5">
+                                    <div className="card-icon text-xl text-slate-800">
+                                        <i className={`fa-solid ${card.icon}`}></i>
+                                    </div>
+                                    <h3 className="text-sm font-extrabold leading-tight">{card.title}</h3>
+                                </div>
                             </div>
 
-                            {/* Center icon & title take up compact space */}
-                            <div className="my-1 text-center flex flex-col items-center">
-                                <div className="card-icon text-xl sm:text-2xl mb-1 text-slate-800">
-                                    <i className={`fa-solid ${card.icon}`}></i>
-                                </div>
-                                <h3 className="text-xs sm:text-sm font-extrabold leading-tight">{card.title}</h3>
+                            {/* --- EXPANDED EFFECT AREA: Grows to occupy all newly freed vertical layout real estate --- */}
+                            <div className="flex-1 flex items-center justify-center pt-1.5 sm:pt-2">
+                                <p className="text-[10px] md:text-[11px] text-center leading-tight sm:leading-relaxed line-clamp-3 sm:line-clamp-4 md:line-clamp-5 font-medium opacity-90 w-full">
+                                    {card.effect}
+                                </p>
                             </div>
-
-                            {/* Flavor text expanded to allow up to 3 lines and more room */}
-                            <p className="text-[9px] sm:text-[10px] text-center leading-relaxed line-clamp-3 italic font-medium opacity-90 pb-1">
-                                "{card.flavorText}"
-                            </p>
                         </div>
                     );
                 })}
@@ -614,7 +726,7 @@ function CardHand({ cards, activeCardId, animatingCardId, currentMana, isLightMo
 // ==========================================
 function ProjectModal({ project, onClose }) {
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm fade-in duration-500">
             <div className="modal-box-bg w-full max-w-lg rounded-2xl p-6 bg-slate-900 border border-slate-800 text-slate-100 shadow-2xl relative animate-in fade-in zoom-in duration-200">
                 <button 
                     onClick={onClose}
@@ -676,9 +788,6 @@ function ProjectModal({ project, onClose }) {
 // 9. CANVAS BACKGROUND PARTICLES COMPONENT
 // ==========================================
 function BackgroundCanvas({ isLightMode, activeGlowRef }) {
-    
-    // Keep a ref of isLightMode so the render loop always knows the latest theme
-    // without needing to restart the effect and resize the canvas.
     const isLightModeRef = useRef(isLightMode);
 
     useEffect(() => {
@@ -725,7 +834,6 @@ function BackgroundCanvas({ isLightMode, activeGlowRef }) {
                 ctx.beginPath();
                 ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
                 ctx.fillStyle = activeGlowRef.current || '#3b82f6';
-                // Read from the ref instead of triggering effect re-runs
                 ctx.globalAlpha = p.alpha * (isLightModeRef.current ? 0.5 : 0.4);
                 ctx.fill();
             });
@@ -739,7 +847,7 @@ function BackgroundCanvas({ isLightMode, activeGlowRef }) {
             window.removeEventListener('resize', handleResize);
             cancelAnimationFrame(animId);
         };
-    }, []); // Empty array ensures it only mounts once on page load and never truncates unexpectedly!
+    }, []);
 
     return null;
 }

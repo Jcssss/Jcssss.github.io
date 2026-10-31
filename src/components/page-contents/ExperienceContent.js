@@ -39,7 +39,7 @@ const ExperienceContent = () => {
     const createExperienceWidgets = () => {
         return widgetData.map((data) => {
             return (
-                <div className="content-box-bg p-4 rounded-xl border flex items-start space-x-4">
+                <div key={data.company} className="content-box-bg p-4 rounded-xl border flex items-start space-x-4">
                     <div className="text-yellow-500 text-lg mt-1">
                         <i className={`fa-solid ${data.icon}`}></i>
                     </div>
