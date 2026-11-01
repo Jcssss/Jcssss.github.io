@@ -63,10 +63,13 @@ body.light-mode {
 body {
     font-family: var(--font-body);
     overflow-x: hidden;
-    background-color: var(--bg-color);
     color: var(--text-main);
     user-select: none;
     transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+#root {
+    background-color: var(--bg-color);
 }
 
 h1, h2, h3, h4, .font-heading {
