@@ -257,7 +257,7 @@ export default function App () {
     return (
         <div className="h-dvh flex flex-col relative overflow-x-hidden overflow-y-auto">
 
-            <BackgroundCanvas isLightMode={isLightMode} activeGlowRef={activeGlowRef} />
+            {/* <BackgroundCanvas isLightMode={isLightMode} activeGlowRef={activeGlowRef} /> */}
 
             <Header 
                 currentMana={currentMana}
