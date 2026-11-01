@@ -129,14 +129,11 @@ const sounds = new SoundEngine();
 // 3. MAIN APP COMPONENT
 // ==========================================
 export default function App () {
-    const MAX_MANA_CAP = 10;
-    const [currentMana, setCurrentMana] = useState(MAX_MANA_CAP);
     const [activeCardId, setActiveCardId] = useState('about');
     const [animatingCardId, setAnimatingCardId] = useState(null);
     const [isLightMode, setIsLightMode] = useState(false);
     const [soundEnabled, setSoundEnabled] = useState(true);
     const [activeModalProject, setActiveModalProject] = useState(null);
-    const [manaLossNotice, setManaLossNotice] = useState(null);
     const [isHandOpen, setHandOpen] = useState(false);
     const [isMobile, setIsMobile] = useState(false);
     const [cardData, setCardData] = useState([{
@@ -188,20 +185,6 @@ export default function App () {
         return () => mediaQuery.removeEventListener('change', handler);
     }, []);
 
-    // Auto-Replenishing Mana Engine
-    useEffect(() => {
-        const timer = setInterval(() => {
-            setCurrentMana(prev => {
-                if (prev < MAX_MANA_CAP) {
-                    return prev + 1;
-                }
-                return prev;
-            });
-        }, 1500);
-
-        return () => clearInterval(timer);
-    }, []);
-
     useEffect(() => {
         if (isLightMode) {
             document.body.classList.add('light-mode');
@@ -223,17 +206,7 @@ export default function App () {
         if (!soundEnabled) sounds.playHover();
     };
 
-    const handleReplenishMana = () => {
-        sounds.playPotion();
-        setCurrentMana(MAX_MANA_CAP);
-    };
-
     const handlePlayCard = (card) => {
-        if (card.id === activeCardId || currentMana < card.cost) return;
-
-        setCurrentMana(prev => Math.max(0, prev - card.cost));
-        setManaLossNotice(`-${card.cost} MANA`);
-        setTimeout(() => setManaLossNotice(null), 1000);
 
         sounds.playCardPlay();
         setAnimatingCardId(card.id);
@@ -246,10 +219,6 @@ export default function App () {
 
     const handleCardClick = (card) => {
         if (isHandOpen) {
-            
-            // Desktop behavior
-            const canAfford = currentMana >= card.cost;
-            if (!canAfford) return;
             handlePlayCard(card);
         }
     };
@@ -259,19 +228,7 @@ export default function App () {
 
             <BackgroundCanvas isLightMode={isLightMode} activeGlowRef={activeGlowRef} />
 
-            <Header 
-                currentMana={currentMana}
-                maxMana={MAX_MANA_CAP}
-                onReplenish={handleReplenishMana}
-                manaLossNotice={manaLossNotice}
-                isLightMode={isLightMode}
-                onToggleTheme={() => {
-                    sounds.playToggle();
-                    setIsLightMode(!isLightMode);
-                }}
-                soundEnabled={soundEnabled}
-                onToggleSound={toggleSound}
-            />
+            <Header/>
 
             <main className="w-full max-w-6xl mx-auto px-4 pt-24 pb-48 md:pb-36 flex-1 flex flex-col items-center justify-center z-10">
                 <MainStage 
@@ -292,7 +249,6 @@ export default function App () {
                 cards={cardData.filter((card) => card.condition())}
                 activeCardId={activeCardId}
                 animatingCardId={animatingCardId}
-                currentMana={currentMana}
                 isLightMode={isLightMode}
                 onCardClick={handleCardClick}
             />
@@ -310,7 +266,7 @@ export default function App () {
 // ==========================================
 // 4. HEADER COMPONENT
 // ==========================================
-function Header({ currentMana, maxMana, onReplenish, manaLossNotice, isLightMode, onToggleTheme, soundEnabled, onToggleSound, onToggleMobileMenu }) {
+function Header() {
     return (
         <header className="w-full px-4 sm:px-6 py-3 sm:py-4 flex justify-between items-center z-20 backdrop-blur-md border-b transition-colors duration-400 fixed top-0 left-0" style={{ backgroundColor: 'var(--header-bg)', borderColor: 'var(--header-border)' }}>
             
@@ -323,48 +279,6 @@ function Header({ currentMana, maxMana, onReplenish, manaLossNotice, isLightMode
                     <h1 className="text-base sm:text-lg md:text-xl font-extrabold tracking-tight text-amber-500 hover:text-amber-400 transition-colors duration-200">Justin Siu</h1>
                     <p className="text-[10px] sm:text-xs font-semibold tracking-wide uppercase" style={{ color: 'var(--text-main)' }}>Software Engineer</p>
                 </div>
-            </div>
-
-            {/* Top Header Controls & Mana Meter */}
-            <div className="flex items-center space-x-2 sm:space-x-3">
-                <div className="flex flex-col items-center relative">
-                    <div className="header-mana-badge flex items-center space-x-1 sm:space-x-1.5 bg-slate-900/90 border px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-full shadow-inner transition-colors duration-300" style={{ borderColor: 'var(--tooltip-border)' }}>
-                        <i className="fa-solid fa-gem text-xs sm:text-sm animate-pulse" style={{ color: 'var(--tooltip-text)' }}></i>
-                        <span className="text-xs sm:text-sm font-black tracking-wider" style={{ color: 'var(--tooltip-text)' }}>
-                            {currentMana} / {maxMana} <span className="text-[10px] font-semibold uppercase hidden sm:inline ml-1">MANA</span>
-                        </span>
-                    </div>
-                    {manaLossNotice && (
-                        <div className="absolute -bottom-5 sm:-bottom-6 text-[10px] sm:text-xs font-black text-rose-500 animate-mana-loss tracking-widest pointer-events-none">
-                            {manaLossNotice}
-                        </div>
-                    )}
-                </div>
-
-                <button 
-                    onClick={onReplenish}
-                    title="Replenish Mana Potion"
-                    className="p-1.5 sm:px-3 sm:py-1.5 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 text-amber-600 border border-amber-500/30 transition-all duration-200 text-xs sm:text-sm font-semibold flex items-center space-x-1.5 shadow-sm active:scale-95"
-                >
-                    <i className="fa-solid fa-flask text-xs"></i>
-                    <span className="hidden sm:inline">Refill</span>
-                </button>
-
-                {/* <button 
-                    onClick={onToggleSound}
-                    title="Toggle Audio Effects"
-                    className="header-toggle-btn w-8 h-8 sm:w-9 sm:h-9 rounded-lg transition-all duration-200 flex items-center justify-center text-xs sm:text-sm active:scale-95 border"
-                >
-                    <i className={`fa-solid ${soundEnabled ? 'fa-volume-high text-blue-500' : 'fa-volume-xmark text-slate-400'}`}></i>
-                </button>
-
-                <button 
-                    onClick={onToggleTheme}
-                    title="Toggle Light/Dark Realm"
-                    className="header-toggle-btn w-8 h-8 sm:w-9 sm:h-9 rounded-lg transition-all duration-200 flex items-center justify-center text-xs sm:text-sm active:scale-95 border"
-                >
-                    <i className={`fa-solid ${isLightMode ? 'fa-moon text-purple-600' : 'fa-sun text-amber-400'}`}></i>
-                </button>*/}
             </div>
         </header>
     );

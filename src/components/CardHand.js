@@ -1,6 +1,6 @@
 import {useEffect, useState, useRef} from 'react'
 
-const CardHand = ({ cards, activeCardId, animatingCardId, currentMana, isLightMode, onCardClick, isHandOpen, setHandOpen, isMobile, sounds}) => {
+const CardHand = ({ cards, animatingCardId, isLightMode, onCardClick, isHandOpen, setHandOpen, isMobile, sounds}) => {
     const [activeIndex, setActiveIndex] = useState(0);
     const [dragOffset, setDragOffset] = useState(0)
     const [isDragging, setIsDragging] = useState(false);
@@ -210,15 +210,12 @@ const CardHand = ({ cards, activeCardId, animatingCardId, currentMana, isLightMo
             className={`card-container relative flex justify-center items-end px-4 w-full max-w-xl sm:max-w-none no-scrollbar transition-transform duration-200 h-full`}
         >
             {cards.map((card, i) => {
-                const isActive = card.id === activeCardId;
                 const isAnimating = card.id === animatingCardId;
-                const canAfford = currentMana >= card.cost;
-                const isDisabled = !canAfford || isActive;
 
                 return (
                     <div
                         key={card.id}
-                        onMouseEnter={() => !isDisabled && !isMobile && sounds.playHover()}
+                        onMouseEnter={() => !isMobile && sounds.playHover()}
                         onClick={() => {
                             setClickedCard(i)
                             setTimeout(() => {setHandOpen(false); }, 300)
@@ -227,27 +224,16 @@ const CardHand = ({ cards, activeCardId, animatingCardId, currentMana, isLightMo
                         className={`hand-card tcg-card relative transition-transform duration-200 
                             w-44 h-64 rounded-xl border-2 p-3 flex flex-col justify-between cursor-pointer select-none bg-gradient-to-b 
                             ${isLightMode ? card.bgLight : card.bgDark} ${isLightMode ? card.borderLight : card.borderDark} 
-                            ${isDisabled ? 'card-disabled' : ''} ${isHandOpen ? '' : 'hidden'}
+                            ${isHandOpen ? '' : 'hidden'}
                         `}
                         style={calculateCardTransform(i, isHandOpen, isAnimating)}
                     >
                         {/* --- HEADER: Card Cost, Title, Icon, and Badge --- */}
-                        <div className="flex flex-col gap-1 sm:gap-1.5">
-                            <div className="flex justify-between items-start w-full">
-                                <div className={`w-7 h-7 rounded-full font-black text-sm flex items-center justify-center border border-blue-300 shadow-md shrink-0 ${isLightMode ? card.badgeBgLight : card.badgeBgDark}`}>
-                                    {card.cost}
-                                </div>
-                                <span className={`text-[11px] font-bold uppercase px-2 py-0.5 rounded-full border ${isLightMode ? card.badgeBgLight : card.badgeBgDark}`}>
-                                    {isActive ? 'ACTIVE' : !canAfford ? 'LOW' : 'PLAY'}
-                                </span>
+                        <div className="text-center flex flex-col items-center mt-10">
+                            <div className={`card-icon text-4xl`}>
+                                <i className={`fa-solid ${card.icon} text-${card.colour}-400`}></i>
                             </div>
-
-                            <div className="text-center flex flex-col items-center mt-5">
-                                <div className={`card-icon text-4xl`}>
-                                    <i className={`fa-solid ${card.icon} text-${card.colour}-400`}></i>
-                                </div>
-                                <h3 className="pt-1 text-sm font-extrabold leading-tight">{card.title}</h3>
-                            </div>
+                            <h3 className="pt-1 text-sm font-extrabold leading-tight">{card.title}</h3>
                         </div>
 
                         {/* --- EFFECT AREA: contains the card effect --- */}
