@@ -255,7 +255,7 @@ export default function App () {
     };
 
     return (
-        <div className={`h-dvh flex flex-col relative overflow-x-hidden overflow-y-auto`}>
+        <div className={`h-dvh flex flex-col relative overflow-x-hidden overflow-y-auto [&::-webkit-scrollbar]:hidden`}>
 
             <BackgroundCanvas isLightMode={isLightMode} activeGlowRef={activeGlowRef} />
 
