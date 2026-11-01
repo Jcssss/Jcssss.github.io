@@ -40,7 +40,12 @@ body.light-mode {
     --card-container-bg: rgba(255, 255, 255, 0.97);
     --card-container-border: rgba(226, 232, 240, 0.95);
     --modal-bg: #ffffff;
-    --dock-bg: linear-gradient(to top, rgba(248, 250, 252, 1), rgba(248, 250, 252, 0.9), rgba(248, 250, 252, 0.7));
+    --dock-bg: linear-gradient(
+        to top, 
+        rgba(248, 250, 252, 1) 0%, 
+        rgba(248, 250, 252, 0.8) 80%, 
+        transparent 100%
+    );
     --tooltip-bg: rgba(255, 255, 255, 0.95);
     --tooltip-border: rgba(59, 130, 246, 0.5);
     --tooltip-text: #1640b4;

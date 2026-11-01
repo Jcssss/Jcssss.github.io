@@ -4,6 +4,7 @@ import ExperienceContent from './components/page-contents/ExperienceContent';
 import ProjectsContent, {PROJECTS_DETAILS} from './components/page-contents/ProjectsContent';
 import ContactContent from './components/page-contents/ContactContents';
 import CardHand from './components/CardHand';
+import generateCardData from './components/CardData'; 
 
 // ==========================================
 // 1. WEB AUDIO SYNTHESIZER
@@ -125,13 +126,25 @@ class SoundEngine {
 const sounds = new SoundEngine();
 
 // ==========================================
-// 2. DATA DEFINITIONS
+// 3. MAIN APP COMPONENT
 // ==========================================
-const CARDS_DATA = [
-    {
+export default function App () {
+    const MAX_MANA_CAP = 10;
+    const [currentMana, setCurrentMana] = useState(MAX_MANA_CAP);
+    const [activeCardId, setActiveCardId] = useState('about');
+    const [animatingCardId, setAnimatingCardId] = useState(null);
+    const [isLightMode, setIsLightMode] = useState(false);
+    const [soundEnabled, setSoundEnabled] = useState(true);
+    const [activeModalProject, setActiveModalProject] = useState(null);
+    const [manaLossNotice, setManaLossNotice] = useState(null);
+    const [isHandOpen, setHandOpen] = useState(false);
+    const [isMobile, setIsMobile] = useState(false);
+    const [cardData, setCardData] = useState([{
         id: 'about',
         title: 'Justin Siu',
         type: 'About',
+        condition: () => activeCardId !== 'about',
+        action: () => setActiveCardId('about'),
         cost: 2,
         icon: 'fa-user-gear',
         badgeBgDark: 'bg-purple-500/20 text-purple-300 border-purple-500/40',
@@ -144,77 +157,22 @@ const CARDS_DATA = [
         bgLight: 'from-purple-50 via-white to-slate-50',
         effect: 'Open the About page. Cannot be played if About page is open.',
         flavorText: 'Learn about the engineer behind the operation.'
-    },
-    {
-        id: 'experience',
-        title: 'Experience',
-        type: 'Career Logs',
-        cost: 3,
-        icon: 'fa-briefcase',
-        badgeBgDark: 'bg-yellow-500/20 text-yellow-300 border-yellow-500/40',
-        badgeBgLight: 'bg-yellow-100 text-yellow-800 border-yellow-300',
-        borderDark: 'border-yellow-500/60',
-        borderLight: 'border-yellow-600',
-        glowDark: '#f6da3b',
-        glowLight: '#dbb126',
-        bgDark: 'from-yellow-950/90 via-slate-900 to-slate-900',
-        bgLight: 'from-yellow-50 via-white to-slate-50',
-        effect: 'Open the Experience page. Cannot be played if Experience section is open.',
-        flavorText: 'A glimpse into the chronicled logs of my career.'
-    },
-    {
-        id: 'projects',
-        title: 'Projects',
-        type: 'Inventory',
-        cost: 4,
-        icon: 'fa-laptop-code',
-        badgeBgDark: 'bg-emerald-500/20 text-emerald-400 border-emerald-400/50',
-        badgeBgLight: 'bg-emerald-100 text-emerald-900 border-emerald-300',
-        borderDark: 'border-emerald-400/60',
-        borderLight: 'border-emerald-600',
-        glowDark: '#10b981',
-        glowLight: '#059669',
-        bgDark: 'from-emerald-950/90 via-slate-900 to-slate-900',
-        bgLight: 'from-emerald-50 via-white to-slate-50',
-        effect: 'Open the Projects section. Cannot be played if Projects section is open.',
-        flavorText: "Inspect the artifacts I've forged"
-    },
-    {
-        id: 'contact',
-        title: 'Get In Touch',
-        type: 'Contact',
-        cost: 1,
-        icon: 'fa-envelope-open-text',
-        badgeBgDark: 'bg-rose-500/20 text-rose-300 border-rose-500/40',
-        badgeBgLight: 'bg-rose-100 text-rose-900 border-rose-300',
-        borderDark: 'border-rose-500/60',
-        borderLight: 'border-rose-600',
-        glowDark: '#f43f5e',
-        glowLight: '#e11d48',
-        bgDark: 'from-rose-950/90 via-slate-900 to-slate-900',
-        bgLight: 'from-rose-50 via-white to-slate-50',
-        effect: 'Open the Contact section. Cannot be played if Contact section is open.',
-        flavorText: "Want to get in touch? I'm ready when you are!"
-    }
-];
-
-// ==========================================
-// 3. MAIN APP COMPONENT
-// ==========================================
-export default function App () {
-    const MAX_MANA_CAP = 10;
-    const [currentMana, setCurrentMana] = useState(MAX_MANA_CAP);
-    const [activeCardId, setActiveCardId] = useState('about');
-    const [animatingCardId, setAnimatingCardId] = useState(null);
-    const [isLightMode, setIsLightMode] = useState(false);
-    const [soundEnabled, setSoundEnabled] = useState(true);
-    const [activeModalProject, setActiveModalProject] = useState(null);
-    const [manaLossNotice, setManaLossNotice] = useState(null);
-    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-    const [isHandOpen, setHandOpen] = useState(false);
-    const [isMobile, setIsMobile] = useState(false);
+    }])
 
     const activeGlowRef = useRef('#3b82f6');
+    
+    useEffect(() => {
+        setCardData(
+            generateCardData(
+                isLightMode,
+                setIsLightMode,
+                soundEnabled,
+                toggleSound,
+                activeCardId,
+                setActiveCardId
+            )
+        )
+    }, [isLightMode, soundEnabled, activeCardId])
 
     useEffect(() => {
         // Check if the device has a coarse pointer (touch screen)
@@ -253,7 +211,7 @@ export default function App () {
     }, [isLightMode]);
 
     useEffect(() => {
-        const activeCard = CARDS_DATA.find(c => c.id === activeCardId);
+        const activeCard = cardData.find(c => c.id === activeCardId);
         if (activeCard) {
             activeGlowRef.current = isLightMode ? activeCard.glowLight : activeCard.glowDark;
         }
@@ -281,9 +239,8 @@ export default function App () {
         setAnimatingCardId(card.id);
 
         setTimeout(() => {
-            setActiveCardId(card.id);
+            card.action();
             setAnimatingCardId(null);
-            setIsMobileMenuOpen(false);
         }, 300);
     };
 
@@ -292,8 +249,7 @@ export default function App () {
             
             // Desktop behavior
             const canAfford = currentMana >= card.cost;
-            const isActive = card.id === activeCardId;
-            if (!canAfford || isActive) return;
+            if (!canAfford) return;
             handlePlayCard(card);
         }
     };
@@ -315,15 +271,11 @@ export default function App () {
                 }}
                 soundEnabled={soundEnabled}
                 onToggleSound={toggleSound}
-                isMobileMenuOpen={isMobileMenuOpen}
-                onToggleMobileMenu={() => {
-                    sounds.playToggle();
-                    setIsMobileMenuOpen((curr) => !curr);
-                }}
             />
 
             <main className="w-full max-w-6xl mx-auto px-4 pt-24 pb-48 md:pb-36 flex-1 flex flex-col items-center justify-center z-10">
                 <MainStage 
+                    cardData={cardData}
                     activeCardId={activeCardId} 
                     isLightMode={isLightMode} 
                     onOpenModal={(idx) => setActiveModalProject(PROJECTS_DETAILS[idx])}
@@ -337,7 +289,7 @@ export default function App () {
                 isHandOpen={isHandOpen}
                 setHandOpen={setHandOpen}
                 isMobile={isMobile}
-                cards={CARDS_DATA}
+                cards={cardData.filter((card) => card.condition())}
                 activeCardId={activeCardId}
                 animatingCardId={animatingCardId}
                 currentMana={currentMana}
@@ -358,7 +310,7 @@ export default function App () {
 // ==========================================
 // 4. HEADER COMPONENT
 // ==========================================
-function Header({ currentMana, maxMana, onReplenish, manaLossNotice, isLightMode, onToggleTheme, soundEnabled, onToggleSound, isMobileMenuOpen, onToggleMobileMenu }) {
+function Header({ currentMana, maxMana, onReplenish, manaLossNotice, isLightMode, onToggleTheme, soundEnabled, onToggleSound, onToggleMobileMenu }) {
     return (
         <header className="w-full px-4 sm:px-6 py-3 sm:py-4 flex justify-between items-center z-20 backdrop-blur-md border-b transition-colors duration-400 fixed top-0 left-0" style={{ backgroundColor: 'var(--header-bg)', borderColor: 'var(--header-border)' }}>
             
@@ -413,15 +365,6 @@ function Header({ currentMana, maxMana, onReplenish, manaLossNotice, isLightMode
                 >
                     <i className={`fa-solid ${isLightMode ? 'fa-moon text-purple-600' : 'fa-sun text-amber-400'}`}></i>
                 </button>*/}
-
-                {/* Mobile Hamburger Menu Toggle Button */}
-                {/* <button
-                    onClick={onToggleMobileMenu}
-                    className="md:hidden p-2 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-500 active:scale-95 transition-all"
-                    aria-label="Toggle Deck Menu"
-                >
-                    <i className={`fa-solid ${isMobileMenuOpen ? 'fa-xmark text-sm' : 'fa-bars-staggered text-sm'}`}></i>
-                </button> */}
             </div>
         </header>
     );
@@ -430,8 +373,11 @@ function Header({ currentMana, maxMana, onReplenish, manaLossNotice, isLightMode
 // ==========================================
 // 6. MAIN STAGE VIEW COMPONENT
 // ==========================================
-function MainStage({ activeCardId, isLightMode, onOpenModal, setActiveCardId}) {
-    const card = CARDS_DATA.find(c => c.id === activeCardId) || CARDS_DATA[0];
+function MainStage({ activeCardId, isLightMode, onOpenModal, setActiveCardId, cardData}) {
+    const card = cardData.find(c => c.id === activeCardId) || cardData[0];
+    console.log(card)
+    console.log(activeCardId)
+    console.log(cardData)
 
     return (
         <div 

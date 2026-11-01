@@ -207,7 +207,7 @@ const CardHand = ({ cards, activeCardId, animatingCardId, currentMana, isLightMo
 
         <div 
             onTransitionEnd={() => setIsTransitioning(false)}
-            className={`card-container relative flex justify-center items-end px-2 sm:px-4 w-full max-w-xl sm:max-w-none no-scrollbar transition-transform duration-200 h-full`}
+            className={`card-container relative flex justify-center items-end px-4 w-full max-w-xl sm:max-w-none no-scrollbar transition-transform duration-200 h-full`}
         >
             {cards.map((card, i) => {
                 const isActive = card.id === activeCardId;
@@ -225,7 +225,7 @@ const CardHand = ({ cards, activeCardId, animatingCardId, currentMana, isLightMo
                             onCardClick(card);
                         }}
                         className={`hand-card tcg-card relative transition-transform duration-200 
-                            w-44 h-64 rounded-xl border-2 p-2.5 md:p-3 flex flex-col justify-between cursor-pointer select-none bg-gradient-to-b 
+                            w-44 h-64 rounded-xl border-2 p-3 flex flex-col justify-between cursor-pointer select-none bg-gradient-to-b 
                             ${isLightMode ? card.bgLight : card.bgDark} ${isLightMode ? card.borderLight : card.borderDark} 
                             ${isDisabled ? 'card-disabled' : ''} ${isHandOpen ? '' : 'hidden'}
                         `}
@@ -234,25 +234,25 @@ const CardHand = ({ cards, activeCardId, animatingCardId, currentMana, isLightMo
                         {/* --- HEADER: Card Cost, Title, Icon, and Badge --- */}
                         <div className="flex flex-col gap-1 sm:gap-1.5">
                             <div className="flex justify-between items-start w-full">
-                                <div className="w-6 h-6 md:w-7 md:h-7 rounded-full bg-blue-600 text-white font-black text-xs md:text-sm flex items-center justify-center border border-blue-300 shadow-md shrink-0">
+                                <div className={`w-7 h-7 rounded-full font-black text-sm flex items-center justify-center border border-blue-300 shadow-md shrink-0 ${isLightMode ? card.badgeBgLight : card.badgeBgDark}`}>
                                     {card.cost}
                                 </div>
-                                <span className={`text-[9px] md:text-[10px] font-bold uppercase px-2 py-0.5 rounded-full border ${isLightMode ? card.badgeBgLight : card.badgeBgDark}`}>
+                                <span className={`text-[11px] font-bold uppercase px-2 py-0.5 rounded-full border ${isLightMode ? card.badgeBgLight : card.badgeBgDark}`}>
                                     {isActive ? 'ACTIVE' : !canAfford ? 'LOW' : 'PLAY'}
                                 </span>
                             </div>
 
                             <div className="text-center flex flex-col items-center mt-5">
-                                <div className="card-icon text-xl text-slate-800">
-                                    <i className={`fa-solid ${card.icon}`}></i>
+                                <div className={`card-icon text-4xl`}>
+                                    <i className={`fa-solid ${card.icon} text-${card.colour}-400`}></i>
                                 </div>
-                                <h3 className="text-sm font-extrabold leading-tight">{card.title}</h3>
+                                <h3 className="pt-1 text-sm font-extrabold leading-tight">{card.title}</h3>
                             </div>
                         </div>
 
                         {/* --- EFFECT AREA: contains the card effect --- */}
                         <div className="flex-1 flex items-center justify-center pt-1.5 sm:pt-2">
-                            <p className="text-[10px] md:text-[11px] text-center leading-tight sm:leading-relaxed line-clamp-3 sm:line-clamp-4 md:line-clamp-5 font-medium opacity-90 w-full">
+                            <p className="text-[11px] text-center leading-tight sm:leading-relaxed line-clamp-3 sm:line-clamp-4 md:line-clamp-5 font-medium opacity-90 w-full">
                                 {card.effect}
                             </p>
                         </div>
