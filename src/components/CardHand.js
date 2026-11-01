@@ -52,7 +52,9 @@ const CardHand = ({ cards, animatingCardId, isLightMode, onCardClick, isHandOpen
 
     // Generate the tooltip text for the hand of cards
     const getTooltipText = () => {
-        if (isMobile) {
+        if (isHandOpen) {
+            return "Swipe to view, click to select"
+        } else if (isMobile) {
             return "Tap hand for options"
         } else {
             return "Hover to expand & play cards"
@@ -197,7 +199,7 @@ const CardHand = ({ cards, animatingCardId, isLightMode, onCardClick, isHandOpen
         <div 
             id="dock-tooltip" 
             className={`px-3 py-1 rounded-full mb-5 border text-[10px] sm:text-[11px] font-extrabold shadow-md flex items-center space-x-1.5 transition-all bg-transparent m-7
-            ${isHandOpen ? 'opacity-0' : ''}`}
+            ${isHandOpen ? '-translate-y-64' : ''}`}
         >
             <i className="fa-solid fa-hand-pointer text-xs"></i>
             <span className="inline">
@@ -222,14 +224,14 @@ const CardHand = ({ cards, animatingCardId, isLightMode, onCardClick, isHandOpen
                             onCardClick(card);
                         }}
                         className={`hand-card tcg-card relative transition-transform duration-200 
-                            w-44 h-64 rounded-xl border-2 p-3 flex flex-col justify-between cursor-pointer select-none bg-gradient-to-b 
+                            w-44 h-60 rounded-xl border-2 p-3 flex flex-col justify-between cursor-pointer select-none bg-gradient-to-b 
                             ${isLightMode ? card.bgLight : card.bgDark} ${isLightMode ? card.borderLight : card.borderDark} 
                             ${isHandOpen ? '' : 'hidden'}
                         `}
                         style={calculateCardTransform(i, isHandOpen, isAnimating)}
                     >
                         {/* --- HEADER: Card Cost, Title, Icon, and Badge --- */}
-                        <div className="text-center flex flex-col items-center mt-10">
+                        <div className="text-center flex flex-col items-center mt-8">
                             <div className={`card-icon text-4xl`}>
                                 <i className={`fa-solid ${card.icon} text-${card.colour}-400`}></i>
                             </div>
